@@ -1,5 +1,7 @@
+/* Rails scroll with the page. The parent must be the document flow (body or a
+   full-height wrapper) so `absolute` + `top:0` spans the entire page. */
 .rail {
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   z-index: 50;
@@ -25,8 +27,7 @@
 }
 
 /* Soft ambient halo behind the strip. Heavy blur so individual scope
-   boundaries dissolve into a gentle colour wash. Kept subtle — the strip
-   is the visual anchor, the glow is atmosphere only. */
+   boundaries dissolve into a gentle colour wash. */
 .glow {
   width: 100px;
   filter: blur(55px);

@@ -3,21 +3,30 @@ import styles from "./GlowRails.module.css";
 
 const colors = scopes.slice(2); // skip bg and fg
 
+/** How many times to tile the pattern. 4 reps of 11 scopes covers ~4x the
+ *  viewport height, which is enough for any reasonable scroll depth. */
+const REPS = 4;
+
 function Blocks() {
   return (
     <>
-      {colors.map((s) => (
-        <div key={s.token} className={styles.block} style={{ background: `var(--syn-${s.token})` }} />
-      ))}
+      {Array.from({ length: REPS }, (_, r) =>
+        colors.map((s) => (
+          <div
+            key={`${r}-${s.token}`}
+            className={styles.block}
+            style={{ background: `var(--syn-${s.token})` }}
+          />
+        )),
+      )}
     </>
   );
 }
 
 /**
- * Fixed colour rails on both viewport edges, drawn as two aligned layers: a
- * sharp thin strip and a wider blurred copy behind it. Both use the same flex
- * distribution, so every colour boundary lines up and the glow reads as the
- * strip bleeding outward rather than as a separate gradient.
+ * Colour rails on both edges. Scroll with the page and tile the palette so
+ * the pattern repeats perpetually. Drawn as two aligned layers: a sharp thin
+ * strip and a wider blurred copy behind it.
  */
 export function GlowRails() {
   return (

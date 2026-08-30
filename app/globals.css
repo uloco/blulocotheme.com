@@ -86,6 +86,7 @@ html {
 }
 
 body {
+  position: relative;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
