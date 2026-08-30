@@ -98,17 +98,28 @@
 
 @media (max-width: 640px) {
   .bar {
-    gap: 5px;
+    gap: 4px;
     height: 44px;
     padding-inline: 0.5rem;
+    /* Guard: a too-wide row here would give the document horizontal overflow,
+       which makes mobile Chrome shrink-to-fit the whole page. */
+    overflow-x: clip;
   }
-  /* Narrower base so all 13 fit a 390px viewport. Set here rather than inline
-     because the component's constants are sized for the desktop row. */
+  /* Touch has no hover, so the inline sizes from the pointer tracking never
+     apply. Fixed base size, and the tapped pill expands in place. 10 base +
+     gaps + expanded = 340px, inside a 390px viewport. */
   .pill {
-    width: 22px !important;
+    width: 20px !important;
     height: 14px !important;
+    transition: width 0.18s cubic-bezier(0.22, 0.61, 0.36, 1),
+                height 0.18s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .pill[data-active] {
+    width: 100px !important;
+    height: 26px !important;
   }
   .label {
-    display: none;
+    font-size: 0.5rem;
+    letter-spacing: 0;
   }
 }

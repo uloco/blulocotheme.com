@@ -93,7 +93,7 @@ export function HeroColorBar() {
               aria-label={s.name}
               onFocus={() => setActive(i)}
               onBlur={clear}
-              onClick={() => setActive(i)}
+              onClick={() => setActive((prev) => (prev === i ? null : i))}
             >
               <span className={styles.label} data-show={isActive || undefined}>
                 {s.name}
