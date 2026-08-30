@@ -32,7 +32,7 @@
 }
 
 .filename {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   /* On --border-strong the muted grey drops to 3.3:1, so use the bright fg. */
   color: var(--fg-bright);
@@ -53,7 +53,7 @@
 .tab,
 .tabActive {
   padding: 0.5rem 1rem;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--fg-muted);
   white-space: nowrap;
@@ -65,10 +65,11 @@
   border-left: none;
   transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
 }
-
-.tab:hover {
-  color: var(--fg);
-  background: color-mix(in srgb, var(--bg) 50%, var(--sunken));
+@media (hover: hover) {
+  .tab:hover {
+    color: var(--fg);
+    background: color-mix(in srgb, var(--bg) 50%, var(--sunken));
+  }
 }
 
 .tabActive {

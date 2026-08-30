@@ -17,9 +17,10 @@
   color: var(--fg-muted);
   transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
 }
-
-.button:hover {
-  color: var(--fg-bright);
+@media (hover: hover) {
+  .button:hover {
+    color: var(--fg-bright);
+  }
 }
 
 .button[data-active] {

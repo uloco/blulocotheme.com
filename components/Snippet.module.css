@@ -18,7 +18,7 @@
 }
 
 .lang {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.6875rem;
   color: var(--fg-muted);
   text-transform: lowercase;
@@ -37,10 +37,11 @@
   cursor: pointer;
   transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
 }
-
-.copy:hover {
-  color: var(--fg-bright);
-  background: var(--border);
+@media (hover: hover) {
+  .copy:hover {
+    color: var(--fg-bright);
+    background: var(--border);
+  }
 }
 
 .copy[data-copied] {

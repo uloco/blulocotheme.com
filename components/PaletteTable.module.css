@@ -56,16 +56,17 @@
 }
 
 .hex {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--fg-muted);
   transition: color 0.15s var(--ease);
   /* Reserve the width so swapping in "copied" does not shift the row. */
   min-width: 7ch;
 }
-
-.swatch:hover .hex {
-  color: var(--fg-bright);
+@media (hover: hover) {
+  .swatch:hover .hex {
+    color: var(--fg-bright);
+  }
 }
 
 @media (max-width: 560px) {
