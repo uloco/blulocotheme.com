@@ -8,23 +8,17 @@ const colors = scopes.slice(2); // skip bg and fg
 
 /** How many neighbours on each side are affected by the magnification. */
 const REACH = 2;
-/** Maximum extra scale factor applied to the hovered pill (1 = no change). */
-const MAX_BOOST = 1.6;
-
-/** Base pill dimensions. */
-const BASE_W = 48;
-const BASE_H = 18;
-/** Maximum pill dimensions at full magnification. */
-const MAX_H = 42;
+/** Maximum extra scale applied to the hovered pill. */
+const MAX_BOOST = 1.8;
 
 /**
- * macOS Dock-style magnification on the syntax palette pills. Each pill grows
- * based on how close the cursor is, with neighbours scaling proportionally.
- * The active pill also grows wider to fit the scope name inside it.
+ * macOS Dock-style magnification on the syntax palette pills. Growth is done
+ * entirely via CSS transforms so the layout never shifts — no width/height
+ * changes, no reflow, no content jump.
  */
 export function HeroColorBar() {
   const [active, setActive] = useState<number | null>(null);
-  const [factors, setFactors] = useState<number[]>(() => colors.map(() => 1));
+  const [scales, setScales] = useState<number[]>(() => colors.map(() => 1));
   const barRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -58,12 +52,12 @@ export function HeroColorBar() {
       return 1 + MAX_BOOST * (Math.cos((1 - t) * Math.PI) + 1) / 2;
     });
 
-    setFactors(next);
+    setScales(next);
   }, []);
 
   const handleLeave = useCallback(() => {
     setActive(null);
-    setFactors(colors.map(() => 1));
+    setScales(colors.map(() => 1));
   }, []);
 
   return (
@@ -75,12 +69,9 @@ export function HeroColorBar() {
         onMouseLeave={handleLeave}
       >
         {colors.map((s, i) => {
-          const f = factors[i];
-          const isActive = i === active;
-          const h = BASE_H + (MAX_H - BASE_H) * (f - 1) / MAX_BOOST;
-          // Active pill widens to fit text; neighbours just grow vertically.
-          const w = isActive && f > 1.3 ? undefined : BASE_W * (1 + (f - 1) * 0.12);
-          const showLabel = isActive && f > 1.3;
+          const sy = scales[i];
+          const sx = i === active ? 1 + (sy - 1) * 0.6 : 1 + (sy - 1) * 0.15;
+          const showLabel = i === active && sy > 2;
 
           return (
             <button
@@ -88,20 +79,24 @@ export function HeroColorBar() {
               type="button"
               ref={(el) => { pillRefs.current[i] = el; }}
               className={styles.pill}
-              data-active={isActive || undefined}
               style={{
                 background: `var(--syn-${s.token})`,
-                height: h,
-                width: w,
+                transform: `scaleY(${sy}) scaleX(${sx})`,
               }}
               aria-label={s.name}
               onFocus={() => setActive(i)}
-              onBlur={() => { setActive(null); setFactors(colors.map(() => 1)); }}
+              onBlur={() => { setActive(null); setScales(colors.map(() => 1)); }}
               onClick={() => setActive(i)}
             >
-              {showLabel && (
-                <span className={styles.label}>{s.name}</span>
-              )}
+              <span
+                className={styles.label}
+                style={{
+                  opacity: showLabel ? 1 : 0,
+                  transform: `scaleY(${1 / sy}) scaleX(${1 / sx})`,
+                }}
+              >
+                {s.name}
+              </span>
             </button>
           );
         })}
