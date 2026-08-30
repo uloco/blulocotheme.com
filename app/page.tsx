@@ -59,15 +59,17 @@ export default async function Home() {
         <section className={styles.hero}>
           <div className={styles.heroCard}>
             <h1 className={styles.srOnly}>Bluloco Theme</h1>
-            <ThemedImage
-              darkSrc="/banner-dark.svg"
-              lightSrc="/banner-light.svg"
-              alt="Bluloco Theme"
-              width={920}
-              height={280}
-              priority
-              className={styles.banner}
-            />
+            <div className={styles.banner}>
+              <ThemedImage
+                darkSrc="/banner-dark.svg"
+                lightSrc="/banner-light.svg"
+                alt="Bluloco Theme"
+                width={920}
+                height={280}
+                priority
+                className={styles.bannerImg}
+              />
+            </div>
             <p className={styles.tagline}>
               A fancy and sophisticated color scheme for your favorite editors and terminals, with a
               light and a dark variant.

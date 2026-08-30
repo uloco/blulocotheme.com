@@ -87,10 +87,40 @@
 }
 
 .banner {
+  position: relative;
   width: 100%;
   max-width: 580px;
   height: auto;
   margin-inline: auto;
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  left: 94.5%;
+  top: 35%;
+  width: 3.5px;
+  height: 29%;
+  background: var(--caret);
+  border-radius: 1px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner::after {
+    animation: none;
+  }
+}
+
+.bannerImg {
+  width: 100%;
+  height: auto;
 }
 
 /* The hero sits on the sunken panel colour, the same one the install snippets
