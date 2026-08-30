@@ -9,9 +9,11 @@ type Props = {
   lang: string;
   /** Steps rather than code. Skips the header bar and copy button. */
   plain?: boolean;
+  /** Pre-highlighted HTML from Shiki. When set, rendered instead of plain code. */
+  html?: string;
 };
 
-export function Snippet({ code, lang, plain = false }: Props) {
+export function Snippet({ code, lang, plain = false, html }: Props) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -49,9 +51,13 @@ export function Snippet({ code, lang, plain = false }: Props) {
           </button>
         </div>
       )}
-      <pre className={styles.pre}>
-        <code>{code}</code>
-      </pre>
+      {html ? (
+        <div className={styles.code} dangerouslySetInnerHTML={{ __html: html }} />
+      ) : (
+        <pre className={styles.pre}>
+          <code>{code}</code>
+        </pre>
+      )}
     </div>
   );
 }

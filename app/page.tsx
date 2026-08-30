@@ -7,7 +7,7 @@ import { Snippet } from "@/components/Snippet";
 import { ThemedImage } from "@/components/ThemedImage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { formatCount, getStars, totalStars, type Stars } from "@/lib/github";
-import { getSamples } from "@/lib/highlight";
+import { getSamples, highlightSnippets } from "@/lib/highlight";
 import {
   community,
   editors,
@@ -24,6 +24,12 @@ export default async function Home() {
   const stars = await getStars();
   const total = totalStars(stars);
   const samples = await getSamples();
+
+  const allPorts = [...editors, ...terminals];
+  const snippetEntries = allPorts
+    .filter((p) => p.install)
+    .map((p) => ({ code: p.install!.code, lang: p.install!.lang }));
+  const snippetHtml = await highlightSnippets(snippetEntries);
 
   return (
     <>
@@ -123,7 +129,7 @@ export default async function Home() {
         >
           <div className={`${styles.cards} ${styles.cardsWide}`}>
             {editors.map((port) => (
-              <PortCard key={port.name} port={port} stars={stars} />
+              <PortCard key={port.name} port={port} stars={stars} snippetHtml={snippetHtml} />
             ))}
           </div>
         </Section>
@@ -137,7 +143,7 @@ export default async function Home() {
         >
           <div className={styles.cards}>
             {terminals.map((port) => (
-              <PortCard key={port.name} port={port} stars={stars} />
+              <PortCard key={port.name} port={port} stars={stars} snippetHtml={snippetHtml} />
             ))}
           </div>
           <div className={styles.chips}>
@@ -309,8 +315,9 @@ function Section({
   );
 }
 
-function PortCard({ port, stars }: { port: Port; stars: Stars }) {
+function PortCard({ port, stars, snippetHtml }: { port: Port; stars: Stars; snippetHtml: Map<string, string> }) {
   const count = port.repo ? stars[port.repo] : undefined;
+  const html = port.install ? snippetHtml.get(port.install.code) : undefined;
 
   return (
     <article className={styles.card} id={slug(port.name)}>
@@ -328,7 +335,7 @@ function PortCard({ port, stars }: { port: Port; stars: Stars }) {
       </div>
       <p className={styles.cardBlurb}>{port.blurb}</p>
       {port.install ? (
-        <Snippet code={port.install.code} lang={port.install.lang} plain={port.install.lang === "text"} />
+        <Snippet code={port.install.code} lang={port.install.lang} plain={port.install.lang === "text"} html={html} />
       ) : null}
       {port.note ? <p className={styles.cardNote}>{port.note}</p> : null}
       <a className={styles.cardLink} href={port.href}>

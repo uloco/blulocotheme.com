@@ -66,3 +66,50 @@
   color: var(--fg-muted);
   white-space: pre-wrap;
 }
+
+/* Shiki-highlighted code. Same variable-switching pattern as CodeWindow. */
+
+.code {
+  overflow-x: auto;
+}
+
+.code :global(pre.shiki) {
+  padding: 0.625rem 0.75rem;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.65;
+  background: transparent !important;
+}
+
+.code :global(pre.shiki code) {
+  display: block;
+  min-width: max-content;
+}
+
+.code :global(pre.shiki .line) {
+  display: inline;
+}
+
+/* Light is the default; dark wins when forced or when the OS prefers it. */
+.code :global(pre.shiki),
+.code :global(pre.shiki span) {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+}
+
+:global(html[data-theme="dark"]) .code :global(pre.shiki),
+:global(html[data-theme="dark"]) .code :global(pre.shiki span) {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .code :global(pre.shiki),
+  :global(html:not([data-theme="light"])) .code :global(pre.shiki span) {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+  }
+}

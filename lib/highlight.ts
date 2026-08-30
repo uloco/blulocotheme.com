@@ -1,6 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { createHighlighter, type ThemeRegistrationRaw } from "shiki";
+import {
+  createHighlighter,
+  type ShikiTransformer,
+  type ThemeRegistrationRaw,
+} from "shiki";
 
 /**
  * Syntax highlighting via Shiki, driven by the real Bluloco VSCode theme files
@@ -397,4 +401,84 @@ export async function getSamples(): Promise<Sample[]> {
 
   highlighter.dispose();
   return out;
+}
+
+/**
+ * Highlight a batch of short code strings (e.g. install snippets) with the
+ * Bluloco themes. Returns a Map from the original code string to its HTML.
+ * Entries with lang "text" are skipped (no tokens to highlight).
+ */
+export async function highlightSnippets(
+  entries: { code: string; lang: string }[],
+): Promise<Map<string, string>> {
+  const result = new Map<string, string>();
+  const skip = new Set(["text", "sh", "ini"]);
+  const toHighlight = entries.filter((e) => !skip.has(e.lang));
+  if (toHighlight.length === 0) return result;
+
+  const [dark, light] = await Promise.all([
+    loadTheme("bluloco-dark.json"),
+    loadTheme("bluloco-light.json"),
+  ]);
+
+  const langs = [...new Set(toHighlight.map((e) => e.lang))];
+
+  const highlighter = await createHighlighter({
+    themes: [dark, light],
+    langs,
+  });
+
+  for (const { code, lang } of toHighlight) {
+    const transformers: ShikiTransformer[] =
+      lang === "lua" ? [luaTableTransformer()] : [];
+    const html = highlighter.codeToHtml(code, {
+      lang,
+      themes: { light: "Bluloco Light", dark: "Bluloco Dark" },
+      defaultColor: false,
+      transformers,
+    });
+    result.set(code, html);
+  }
+
+  highlighter.dispose();
+  return result;
+}
+
+/**
+ * Lua's TextMate grammar scopes table keys as plain `variable.other` and
+ * leaves braces/commas unscoped, so they all render as foreground. This
+ * transformer re-colors them to match the property and punctuation scopes
+ * that Bluloco targets.
+ */
+function luaTableTransformer(): ShikiTransformer {
+  const PROP = { light: "#a05a48", dark: "#ce9887" };
+  const PUNCT = { light: "#7a82da", dark: "#7a82da" };
+
+  return {
+    span(node) {
+      const text = node.children
+        .filter((c): c is { type: "text"; value: string } => c.type === "text")
+        .map((c) => c.value)
+        .join("");
+
+      const trimmed = text.trim();
+      if (!trimmed) return;
+
+      // Table keys: identifier followed by ` =` on the same line.
+      const isKey =
+        /^[a-zA-Z_]\w*$/.test(trimmed) && this.source.includes(`${trimmed} =`);
+      // Punctuation: braces and commas that Shiki left as foreground.
+      const isPunct = /^[{},]+$/.test(trimmed);
+
+      if (!isKey && !isPunct) return;
+
+      const colors = isKey ? PROP : PUNCT;
+      const style = node.properties.style as string | undefined;
+      if (!style) return;
+
+      node.properties.style = style
+        .replace(/--shiki-light:[^;]+/, `--shiki-light:${colors.light}`)
+        .replace(/--shiki-dark:[^;]+/, `--shiki-dark:${colors.dark}`);
+    },
+  };
 }
