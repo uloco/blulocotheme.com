@@ -22,7 +22,7 @@ export type Port = {
 export const editors: Port[] = [
   {
     name: "Neovim",
-    blurb: "Written in Lua with lush.nvim. Follows your system light and dark mode.",
+    blurb: "Lua, powered by lush.nvim. Follows system light/dark mode out of the box.",
     logo: "neovim",
     repo: "uloco/bluloco.nvim",
     href: "https://github.com/uloco/bluloco.nvim",
@@ -37,11 +37,11 @@ export const editors: Port[] = [
   opts = {},
 }`,
     },
-    note: "lazy.nvim. Supports 40+ plugins, treesitter and LSP semantic tokens.",
+    note: "lazy.nvim spec. 40+ plugin integrations, treesitter, LSP semantic tokens.",
   },
   {
     name: "VS Code",
-    blurb: "The original. Dark and light, each with an italic variant. Over a million installs.",
+    blurb: "Where it all started. Dark + light, each with an italic variant.",
     logo: "vscode",
     repo: "uloco/theme-bluloco-dark",
     href: "https://marketplace.visualstudio.com/items?itemName=uloco.theme-bluloco-dark",
@@ -51,11 +51,11 @@ export const editors: Port[] = [
       code: `code --install-extension uloco.theme-bluloco-dark
 code --install-extension uloco.theme-bluloco-light`,
     },
-    note: "Works in Cursor, Windsurf and VSCodium too.",
+    note: "Also works in Cursor, Windsurf and VSCodium.",
   },
   {
     name: "Zed",
-    blurb: "All four variants in one extension. Install it from the extension registry.",
+    blurb: "All four variants in a single extension.",
     logo: "zed",
     repo: "uloco/bluloco-zed",
     href: "https://github.com/uloco/bluloco-zed",
@@ -70,11 +70,11 @@ code --install-extension uloco.theme-bluloco-light`,
   }
 }`,
     },
-    note: "First run zed: extensions and install Bluloco Theme.",
+    note: "Open zed: extensions first and search for Bluloco.",
   },
   {
     name: "JetBrains IDEs",
-    blurb: "Color schemes for IntelliJ IDEA, WebStorm, PyCharm and the rest of the family.",
+    blurb: "Color schemes for IntelliJ, WebStorm, PyCharm and friends.",
     logo: "jetbrains",
     repo: "uloco/webstorm-bluloco-scheme",
     href: "https://github.com/uloco/webstorm-bluloco-scheme",
@@ -86,7 +86,7 @@ code --install-extension uloco.theme-bluloco-light`,
 3. Click the gear icon > Import Scheme…
 4. Select the .icls file`,
     },
-    note: "There is no official Bluloco plugin in the JetBrains Marketplace. Paid listings there are not mine.",
+    note: "Import the .icls files manually. Official plugin coming soon.",
   },
 ];
 
@@ -94,7 +94,7 @@ code --install-extension uloco.theme-bluloco-light`,
 export const terminals: Port[] = [
   {
     name: "Ghostty",
-    blurb: "Built in. Both variants, and it can follow your system appearance.",
+    blurb: "Built in. Both variants. Can follow system appearance.",
     logo: "ghostty",
     repo: null,
     href: "https://ghostty.org/docs/config/reference#theme",
@@ -106,7 +106,7 @@ export const terminals: Port[] = [
   },
   {
     name: "WezTerm",
-    blurb: "Built in. Pick the scheme by name, no files to copy.",
+    blurb: "Built in. Just set the scheme name, no files to copy.",
     logo: "wezterm",
     repo: null,
     href: "https://wezterm.org/colorschemes/b/index.html",
@@ -118,7 +118,7 @@ export const terminals: Port[] = [
   },
   {
     name: "kitty",
-    blurb: "Ships with kitty-themes. One command switches it on.",
+    blurb: "Bundled via kitty-themes. One command.",
     logo: null,
     repo: null,
     href: "https://github.com/kovidgoyal/kitty-themes",
@@ -165,17 +165,17 @@ export const terminalCount = 3 + otherTerminals.length;
 export const tools = [
   {
     name: "bat",
-    blurb: "Syntax themes for the cat replacement.",
+    blurb: "Syntax themes for bat.",
     href: "https://github.com/uloco/bluloco.nvim/tree/main/extra/bat",
   },
   {
     name: "lazygit",
-    blurb: "Dark and light configs for the git TUI.",
+    blurb: "Dark and light configs.",
     href: "https://github.com/uloco/bluloco.nvim/tree/main/extra/lazygit",
   },
   {
     name: "opencode",
-    blurb: "Theme for the terminal coding agent.",
+    blurb: "For the terminal coding agent.",
     href: "https://github.com/uloco/bluloco-opencode",
   },
 ];
