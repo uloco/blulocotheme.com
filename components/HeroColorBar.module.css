@@ -12,6 +12,9 @@
   height: 56px;
   padding-inline: 1rem;
   cursor: pointer;
+  /* Let vertical scrolling through the bar still work, while horizontal drags
+     are ours to track. */
+  touch-action: pan-y;
 }
 
 .pill {
@@ -23,11 +26,16 @@
   border-radius: 999px;
   cursor: pointer;
   overflow: hidden;
+  /* Swiping across the row would otherwise start a text selection on iOS,
+     which flickers the label in and out. */
+  user-select: none;
+  -webkit-user-select: none;
   transition: width 0.16s cubic-bezier(0.22, 0.61, 0.36, 1),
               height 0.16s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .label {
+  font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -43,15 +51,19 @@
   opacity: 1;
 }
 
-/* Caption. Fixed height so swapping the text never shifts the page. */
+/* Caption. Fixed height so swapping between the hint and a scope name never
+   shifts the page. Sized for the tallest of the two, which is the hint. */
 .caption {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: baseline;
-  gap: 0.625rem;
-  height: 1.25rem;
+  align-items: center;
+  gap: 0.5rem 0.625rem;
+  height: 3rem;
   margin-top: 0.5rem;
+  padding-inline: 1rem;
   font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 .name {
@@ -61,7 +73,7 @@
 
 .hexDark,
 .hexLight {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   color: var(--fg-muted);
 }
 
@@ -93,7 +105,9 @@
 }
 
 .hint {
+  max-width: 34rem;
   color: var(--fg-muted);
+  text-align: center;
 }
 
 @media (max-width: 640px) {
@@ -121,5 +135,9 @@
   .label {
     font-size: 0.5rem;
     letter-spacing: 0;
+  }
+  /* The hint wraps to three lines at this width. */
+  .caption {
+    height: 4rem;
   }
 }

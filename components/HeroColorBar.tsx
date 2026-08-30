@@ -18,9 +18,10 @@ const BASE_H = 16;
 const MAX_H = 40;
 /** Extra width a non-active neighbour gains at full boost. */
 const NEIGHBOUR_W_GAIN = 10;
-/** Rough px per character at the label font size, plus inner padding. */
-const CHAR_W = 6.1;
-const LABEL_PAD = 24;
+/** Rough px per character at the label font size, plus inner padding. Iosevka
+ *  is a monospace with a 0.5em advance, so at 10px this is a tight estimate. */
+const CHAR_W = 5;
+const LABEL_PAD = 26;
 
 /** Cosine falloff, 1 at the cursor down to 0 past REACH. */
 function boostAt(distance: number): number {
@@ -41,34 +42,79 @@ export function HeroColorBar() {
 
   const current = active === null ? null : colors[active];
 
-  const handleMove = useCallback((e: React.MouseEvent) => {
-    if (!barRef.current) return;
-    const mouseX = e.clientX;
+  const nearestIndex = useCallback((clientX: number) => {
     let closestIdx = 0;
     let closestDist = Infinity;
-
     pillRefs.current.forEach((el, i) => {
       if (!el) return;
       const r = el.getBoundingClientRect();
-      const dist = Math.abs(mouseX - (r.left + r.width / 2));
+      const dist = Math.abs(clientX - (r.left + r.width / 2));
       if (dist < closestDist) {
         closestDist = dist;
         closestIdx = i;
       }
     });
-
-    setActive(closestIdx);
+    return closestIdx;
   }, []);
 
-  const clear = useCallback(() => setActive(null), []);
+  const trackTo = useCallback(
+    (clientX: number) => {
+      if (!barRef.current) return;
+      setActive(nearestIndex(clientX));
+    },
+    [nearestIndex],
+  );
+
+  /**
+   * One handler for mouse and touch. `buttons > 0` is true while a finger is
+   * down, so a swipe across the row tracks exactly like a hover.
+   */
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.pointerType === "mouse" || e.buttons > 0) trackTo(e.clientX);
+    },
+    [trackTo],
+  );
+
+  const handlePointerLeave = useCallback((e: React.PointerEvent) => {
+    // Touch has no hover to leave; clearing here would collapse on lift.
+    if (e.pointerType === "mouse") setActive(null);
+  }, []);
+
+  /** Fallback for the swipe: touch events are dependable on iOS even where
+   *  pointermove during a drag is not. */
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      const t = e.touches[0];
+      if (t) trackTo(t.clientX);
+    },
+    [trackTo],
+  );
+
+  /**
+   * Taps are handled on the whole row rather than per pill. A pill is only
+   * 14px tall, far under the 44px minimum touch target, so requiring a direct
+   * hit made it feel broken. Anywhere in the row selects the nearest colour.
+   * Where hover exists the pointer tracking already owns selection.
+   */
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (window.matchMedia("(hover: hover)").matches) return;
+      const idx = nearestIndex(e.clientX);
+      setActive((prev) => (prev === idx ? null : idx));
+    },
+    [nearestIndex],
+  );
 
   return (
     <div className={styles.wrap}>
       <div
         ref={barRef}
         className={styles.bar}
-        onMouseMove={handleMove}
-        onMouseLeave={clear}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        onTouchMove={handleTouchMove}
+        onClick={handleClick}
       >
         {colors.map((s, i) => {
           const boost = active === null ? 0 : boostAt(Math.abs(i - active));
@@ -91,9 +137,15 @@ export function HeroColorBar() {
                 height: `${height}px`,
               }}
               aria-label={s.name}
-              onFocus={() => setActive(i)}
-              onBlur={clear}
-              onClick={() => setActive((prev) => (prev === i ? null : i))}
+              // Only keyboard focus should select. A tap also fires focus, and
+              // that combined with a toggle on click is what made touch need
+              // two taps: the first set it, then the click cleared it again.
+              onFocus={(e) => {
+                if (e.currentTarget.matches(":focus-visible")) setActive(i);
+              }}
+              // Guarded so blurring a pill that is no longer the active one
+              // cannot clear the selection a new tap just made.
+              onBlur={() => setActive((prev) => (prev === i ? null : prev))}
             >
               <span className={styles.label} data-show={isActive || undefined}>
                 {s.name}
@@ -110,7 +162,10 @@ export function HeroColorBar() {
             <span className={styles.hexLight}>{current.light}</span>
           </>
         ) : (
-          <span className={styles.hint}>Thirteen scopes, one meaning each</span>
+          <span className={styles.hint}>
+            Every color carries one meaning, used consistently across every language and tuned for
+            contrast and readability.
+          </span>
         )}
       </p>
     </div>
