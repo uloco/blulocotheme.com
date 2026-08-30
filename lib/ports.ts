@@ -192,7 +192,6 @@ export const community: CommunityPort[] = [
   { name: "Helix", author: "DeviousStoat", repo: "DeviousStoat/bluloco.helix", variants: "dark, light" },
   { name: "Vim", author: "DanBradbury", repo: "DanBradbury/bluloco.vim", variants: "dark, light" },
   { name: "Yazi", author: "hankertrix", repo: "hankertrix/bluloco-yazi", variants: "dark, light" },
-  { name: "Neovim, no lush", author: "mistweaverco", repo: "mistweaverco/bluloco.nvim", variants: "dark, light" },
   { name: "Replit", author: "hankertrix", repo: "hankertrix/bluloco.replit", variants: "dark, light" },
   { name: "Mintty, Git Bash", author: "userhiren", repo: "userhiren/mintty-bluloco", variants: "dark, light" },
   { name: "Notepad++", author: "Fatal1tyBarucco", repo: "Fatal1tyBarucco/Bluloco-Dark-Theme-for-Notepad-Plus-Plus", variants: "dark" },
