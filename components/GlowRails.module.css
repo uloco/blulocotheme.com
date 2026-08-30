@@ -34,13 +34,17 @@
   opacity: 0.35;
 }
 
+/* Anchored flush to the edge, never past it: a negative offset here would add
+   real overflow, which makes mobile Chrome shrink-to-fit the whole page. The
+   outward half of the blur was clipped by the body anyway. Blur itself does not
+   affect layout, so it can still bleed softly. */
 .left .glow {
-  left: -50px;
+  left: 0;
   mask-image: linear-gradient(to right, black, transparent);
 }
 
 .right .glow {
-  right: -50px;
+  right: 0;
   mask-image: linear-gradient(to left, black, transparent);
 }
 
@@ -64,15 +68,9 @@
 
 @media (max-width: 768px) {
   .glow {
-    width: 72px;
-    filter: blur(40px);
-    opacity: 0.28;
-  }
-  .left .glow {
-    left: -36px;
-  }
-  .right .glow {
-    right: -36px;
+    width: 48px;
+    filter: blur(30px);
+    opacity: 0.22;
   }
   .strip {
     width: 4px;
