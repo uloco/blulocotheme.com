@@ -299,7 +299,7 @@
   font-size: 0.6875rem;
   color: var(--fg-muted);
   background: var(--sunken);
-  border: 1px solid color-mix(in srgb, var(--syn-string) 32%, var(--border));
+  border: 1px solid var(--border);
   border-radius: 999px;
   flex-shrink: 0;
 }
