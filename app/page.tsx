@@ -316,7 +316,8 @@ function Section({
 }
 
 function PortCard({ port, stars, snippetHtml }: { port: Port; stars: Stars; snippetHtml: Map<string, string> }) {
-  const count = port.repo ? stars[port.repo] : undefined;
+  const repos = port.repo ? (Array.isArray(port.repo) ? port.repo : [port.repo]) : [];
+  const count = repos.reduce((sum, r) => sum + (stars[r] ?? 0), 0) || undefined;
   const html = port.install ? snippetHtml.get(port.install.code) : undefined;
 
   return (
@@ -338,10 +339,18 @@ function PortCard({ port, stars, snippetHtml }: { port: Port; stars: Stars; snip
         <Snippet code={port.install.code} lang={port.install.lang} plain={port.install.lang === "text"} html={html} />
       ) : null}
       {port.note ? <p className={styles.cardNote}>{port.note}</p> : null}
-      <a className={styles.cardLink} href={port.href}>
-        {port.hrefLabel}
-        <Arrow />
-      </a>
+      <div className={styles.cardLinks}>
+        <a className={styles.cardLink} href={port.href}>
+          {port.hrefLabel}
+          <Arrow />
+        </a>
+        {port.extraLinks?.map((link) => (
+          <a key={link.href} className={styles.cardLink} href={link.href}>
+            {link.label}
+            <Arrow />
+          </a>
+        ))}
+      </div>
     </article>
   );
 }

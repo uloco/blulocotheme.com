@@ -352,17 +352,21 @@
   color: var(--fg-muted);
 }
 
+.cardLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1rem;
+  align-self: flex-start;
+  margin-top: auto;
+}
+
 .cardLink {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  align-self: flex-start;
   font-size: 0.8125rem;
   font-weight: 550;
   color: var(--accent);
-  /* Cards stretch to the tallest in the row. Pinning only the link keeps the
-     snippet directly under the blurb instead of floating mid-card. */
-  margin-top: auto;
 }
 @media (hover: hover) {
   .cardLink:hover {

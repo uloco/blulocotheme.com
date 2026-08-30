@@ -10,11 +10,13 @@ export type Port = {
   /** Stroke glyph, for targets with no logo in simple-icons. */
   glyph?: GlyphName;
   /** owner/repo on GitHub, used for the star count. */
-  repo: string | null;
+  repo: string | string[] | null;
   /** Where the button sends you. */
   href: string;
   /** Label for the primary button. */
   hrefLabel: string;
+  /** Additional links shown after the primary one. */
+  extraLinks?: { href: string; label: string }[];
   /** Copy-paste install snippet. */
   install: { lang: string; code: string } | null;
   /** Extra note shown under the snippet. */
@@ -44,11 +46,14 @@ export const editors: Port[] = [
   },
   {
     name: "VS Code",
-    blurb: "Where Bluloco started, with dark and light variants and an italic version of each.",
+    blurb: "Where Bluloco started. Dark and light, an italic version included in each.",
     logo: "vscode",
-    repo: "uloco/theme-bluloco-dark",
+    repo: ["uloco/theme-bluloco-dark", "uloco/theme-bluloco-light"],
     href: "https://marketplace.visualstudio.com/items?itemName=uloco.theme-bluloco-dark",
-    hrefLabel: "Get on Marketplace",
+    hrefLabel: "Dark on Marketplace",
+    extraLinks: [
+      { href: "https://marketplace.visualstudio.com/items?itemName=uloco.theme-bluloco-light", label: "Light on Marketplace" },
+    ],
     install: {
       lang: "sh",
       code: `code --install-extension uloco.theme-bluloco-dark
