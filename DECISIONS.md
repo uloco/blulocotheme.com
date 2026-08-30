@@ -3,7 +3,7 @@
 Running record of every decision made while building blulocotheme.com, so a new
 session can pick up without re-litigating anything. Read this first.
 
-Owner: Umut Topuzoğlu (`uloco`). Branch: `new-start`.
+Owner: Umut Topuzoğlu (`uloco`). Branch: `main`.
 
 ---
 
@@ -264,6 +264,9 @@ the **number** stays `--fg-muted`. At 11px the raw yellow only reaches ~2.8:1 on
 `--sunken`, and the number is the part that has to be readable. Do not colour the
 number yellow without also darkening it.
 
+The badge **border stays `--border`**. A yellow-tinted border was tried and
+rejected: only the star itself should carry the colour.
+
 ---
 
 ## 7a. Touch behaviour
@@ -299,6 +302,11 @@ The hero colour bar caused a long back-and-forth. What is true:
    during a drag. `-webkit-tap-highlight-color: transparent` is set globally on
    `a`, `button` and `[role="tab"]` in `globals.css`, plus `user-select: none`
    on the pills so a swipe cannot start a text selection.
+3. **Dismissing.** A tap anywhere outside the bar collapses the expanded pill,
+   via a `pointerdown` listener on `document` that ignores targets inside the
+   bar. `pointerdown` runs before `click`, so a tap on the bar is filtered out
+   there and still reaches `handleClick`. Without this a colour stayed open until
+   the reader happened to tap the bar a second time.
 
 ### Testing on the simulator
 
@@ -386,7 +394,6 @@ carry slightly different visual weight. Not yet resolved.
 | Hero stat "1M+ installs" | Marketplace shows 527k dark + 500k light. Open question whether to keep the combined figure or split it per variant. |
 | JetBrains plugin | Owner intends to publish an official one. The card copy should change when that lands. |
 | Icon weight | Brand logos are filled, hand-drawn glyphs are stroked, so they read at slightly different weights in the Tools and Community rows. Unresolved. |
-| Colour bar on touch | A tap outside an expanded pill does not collapse it yet. See §12. |
 
 ---
 
@@ -458,16 +465,10 @@ Before calling anything done, check in a browser:
 
 ## 12. Next session: start here
 
-1. **Tap outside an expanded pill should collapse it.** Right now a tap only
-   collapses when it lands on the bar again. Add a dismiss on tapping anywhere
-   else on the page — a listener on `document` that clears `active`, skipping
-   taps inside the bar itself. Remember to clean the listener up, and note the
-   React compiler lint forbids `setState` in an effect, so wire it with an event
-   listener rather than derived state.
-2. Optional polish, in rough priority order:
+1. Optional polish, in rough priority order:
    - Unify icon weight; brand logos are filled, glyphs are stroked (§8).
    - Decide the "1M+ installs" stat: combined, or split per variant (§9).
-3. Infrastructure still outstanding: set `GITHUB_TOKEN` on Vercel, and point the
+2. Infrastructure still outstanding: set `GITHUB_TOKEN` on Vercel, and point the
    netcup DNS at Vercel (§9 has the exact records).
 
 Verify touch behaviour by hand or in Chrome emulation, never with simulator
