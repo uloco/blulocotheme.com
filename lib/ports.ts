@@ -1,3 +1,4 @@
+import type { GlyphName } from "@/components/Logo";
 import type { LogoName } from "./logo-paths";
 
 export type Port = {
@@ -6,6 +7,8 @@ export type Port = {
   /** One line, plain. */
   blurb: string;
   logo: LogoName | null;
+  /** Stroke glyph, for targets with no logo in simple-icons. */
+  glyph?: GlyphName;
   /** owner/repo on GitHub, used for the star count. */
   repo: string | null;
   /** Where the button sends you. */
@@ -22,7 +25,7 @@ export type Port = {
 export const editors: Port[] = [
   {
     name: "Neovim",
-    blurb: "Lua, powered by lush.nvim. Follows system light/dark mode out of the box.",
+    blurb: "Written in Lua with lush.nvim, and it follows your system light or dark mode on its own.",
     logo: "neovim",
     repo: "uloco/bluloco.nvim",
     href: "https://github.com/uloco/bluloco.nvim",
@@ -37,11 +40,11 @@ export const editors: Port[] = [
   opts = {},
 }`,
     },
-    note: "lazy.nvim spec. 40+ plugin integrations, treesitter, LSP semantic tokens.",
+    note: "A lazy.nvim spec, with 40+ plugin integrations, treesitter and LSP semantic tokens.",
   },
   {
     name: "VS Code",
-    blurb: "Where it all started. Dark + light, each with an italic variant.",
+    blurb: "Where Bluloco started, with dark and light variants and an italic version of each.",
     logo: "vscode",
     repo: "uloco/theme-bluloco-dark",
     href: "https://marketplace.visualstudio.com/items?itemName=uloco.theme-bluloco-dark",
@@ -51,11 +54,11 @@ export const editors: Port[] = [
       code: `code --install-extension uloco.theme-bluloco-dark
 code --install-extension uloco.theme-bluloco-light`,
     },
-    note: "Also works in Cursor, Windsurf and VSCodium.",
+    note: "Works the same in Cursor, Windsurf and VSCodium.",
   },
   {
     name: "Zed",
-    blurb: "All four variants in a single extension.",
+    blurb: "All four variants bundled into a single extension.",
     logo: "zed",
     repo: "uloco/bluloco-zed",
     href: "https://github.com/uloco/bluloco-zed",
@@ -74,7 +77,7 @@ code --install-extension uloco.theme-bluloco-light`,
   },
   {
     name: "JetBrains IDEs",
-    blurb: "Color schemes for IntelliJ, WebStorm, PyCharm and friends.",
+    blurb: "Color schemes for IntelliJ, WebStorm, PyCharm and the rest of the family.",
     logo: "jetbrains",
     repo: "uloco/webstorm-bluloco-scheme",
     href: "https://github.com/uloco/webstorm-bluloco-scheme",
@@ -86,7 +89,7 @@ code --install-extension uloco.theme-bluloco-light`,
 3. Click the gear icon > Import Scheme…
 4. Select the .icls file`,
     },
-    note: "Import the .icls files manually. Official plugin coming soon.",
+    note: "Import the .icls files manually for now, an official plugin is coming.",
   },
 ];
 
@@ -94,7 +97,7 @@ code --install-extension uloco.theme-bluloco-light`,
 export const terminals: Port[] = [
   {
     name: "Ghostty",
-    blurb: "Built in. Both variants. Can follow system appearance.",
+    blurb: "Built in, with both variants and optional switching alongside your system appearance.",
     logo: "ghostty",
     repo: null,
     href: "https://ghostty.org/docs/config/reference#theme",
@@ -106,7 +109,7 @@ export const terminals: Port[] = [
   },
   {
     name: "WezTerm",
-    blurb: "Built in. Just set the scheme name, no files to copy.",
+    blurb: "Also built in, so you only need to name the scheme.",
     logo: "wezterm",
     repo: null,
     href: "https://wezterm.org/colorschemes/b/index.html",
@@ -118,8 +121,9 @@ export const terminals: Port[] = [
   },
   {
     name: "kitty",
-    blurb: "Bundled via kitty-themes. One command.",
+    blurb: "Bundled through kitty-themes and applied with a single command.",
     logo: null,
+    glyph: "terminal",
     repo: null,
     href: "https://github.com/kovidgoyal/kitty-themes",
     hrefLabel: "kitty-themes",
@@ -161,22 +165,32 @@ export const otherTerminals = [
 /** Featured terminals plus the rest. Used by the hero stat. */
 export const terminalCount = 3 + otherTerminals.length;
 
-/** Command line tools with a Bluloco theme in the bluloco.nvim repo. */
-export const tools = [
+/** Tools with a Bluloco theme. Not editors, not terminals: the things around
+ *  them. Browsers and similar will land here too. */
+export const tools: {
+  name: string;
+  blurb: string;
+  href: string;
+  logo?: LogoName;
+  glyph?: GlyphName;
+}[] = [
   {
     name: "bat",
-    blurb: "Syntax themes for bat.",
+    blurb: "Syntax themes for the file previewer",
     href: "https://github.com/uloco/bluloco.nvim/tree/main/extra/bat",
+    glyph: "file",
   },
   {
     name: "lazygit",
-    blurb: "Dark and light configs.",
+    blurb: "Matching dark and light configs",
     href: "https://github.com/uloco/bluloco.nvim/tree/main/extra/lazygit",
+    glyph: "git",
   },
   {
     name: "opencode",
-    blurb: "For the terminal coding agent.",
+    blurb: "For the terminal coding agent",
     href: "https://github.com/uloco/bluloco-opencode",
+    glyph: "spark",
   },
 ];
 
@@ -185,18 +199,20 @@ export type CommunityPort = {
   author: string;
   repo: string;
   variants: string;
+  logo?: LogoName;
+  glyph?: GlyphName;
 };
 
 /** Ports by other people. Verified to contain real theme files. */
 export const community: CommunityPort[] = [
-  { name: "Helix", author: "DeviousStoat", repo: "DeviousStoat/bluloco.helix", variants: "dark, light" },
-  { name: "Vim", author: "DanBradbury", repo: "DanBradbury/bluloco.vim", variants: "dark, light" },
-  { name: "Yazi", author: "hankertrix", repo: "hankertrix/bluloco-yazi", variants: "dark, light" },
-  { name: "Replit", author: "hankertrix", repo: "hankertrix/bluloco.replit", variants: "dark, light" },
-  { name: "Mintty, Git Bash", author: "userhiren", repo: "userhiren/mintty-bluloco", variants: "dark, light" },
-  { name: "Notepad++", author: "Fatal1tyBarucco", repo: "Fatal1tyBarucco/Bluloco-Dark-Theme-for-Notepad-Plus-Plus", variants: "dark" },
-  { name: "Geany", author: "wibare", repo: "wibare/bluloco-dark-geany", variants: "dark" },
-  { name: "yeet", author: "aserowy", repo: "aserowy/yeet-bluloco-theme", variants: "dark, light" },
+  { name: "Helix", author: "DeviousStoat", repo: "DeviousStoat/bluloco.helix", variants: "dark, light", logo: "helix" },
+  { name: "Vim", author: "DanBradbury", repo: "DanBradbury/bluloco.vim", variants: "dark, light", logo: "vim" },
+  { name: "Yazi", author: "hankertrix", repo: "hankertrix/bluloco-yazi", variants: "dark, light", glyph: "panes" },
+  { name: "Replit", author: "hankertrix", repo: "hankertrix/bluloco.replit", variants: "dark, light", logo: "replit" },
+  { name: "Mintty, Git Bash", author: "userhiren", repo: "userhiren/mintty-bluloco", variants: "dark, light", glyph: "terminal" },
+  { name: "Notepad++", author: "Fatal1tyBarucco", repo: "Fatal1tyBarucco/Bluloco-Dark-Theme-for-Notepad-Plus-Plus", variants: "dark", glyph: "code" },
+  { name: "Geany", author: "wibare", repo: "wibare/bluloco-dark-geany", variants: "dark", glyph: "code" },
+  { name: "yeet", author: "aserowy", repo: "aserowy/yeet-bluloco-theme", variants: "dark, light", glyph: "panes" },
 ];
 
 export const links = {
