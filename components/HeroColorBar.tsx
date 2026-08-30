@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { scopes } from "@/lib/palette";
 import styles from "./HeroColorBar.module.css";
 
@@ -105,6 +105,21 @@ export function HeroColorBar() {
     },
     [nearestIndex],
   );
+
+  /**
+   * A tap anywhere else on the page collapses the pill. Without this the only
+   * way out is a second tap on the bar, which leaves a colour stuck open while
+   * the reader has clearly moved on. `pointerdown` runs before `click`, so a tap
+   * inside the bar is filtered out here and still reaches `handleClick`.
+   */
+  useEffect(() => {
+    const dismiss = (e: PointerEvent) => {
+      if (barRef.current?.contains(e.target as Node)) return;
+      setActive(null);
+    };
+    document.addEventListener("pointerdown", dismiss);
+    return () => document.removeEventListener("pointerdown", dismiss);
+  }, []);
 
   return (
     <div className={styles.wrap}>
