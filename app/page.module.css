@@ -44,6 +44,10 @@
   border-radius: 6px;
 }
 
+.brandIcon {
+  border-radius: 6px;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -63,52 +67,32 @@
 /* Hero */
 
 .hero {
-  max-width: 44rem;
+  max-width: var(--max-width);
   margin-inline: auto;
-  padding: 5.5rem 1.5rem 3rem;
+  padding: 4rem 1.5rem 3rem;
   text-align: center;
 }
 
-.eyebrow {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
-.title {
-  margin-top: 1.25rem;
-  font-size: clamp(3.25rem, 11vw, 5.5rem);
-  font-weight: 700;
-  letter-spacing: -0.045em;
-}
-
-/* The blinking block cursor after the wordmark, like a terminal prompt. */
-.title::after {
-  content: "";
-  display: inline-block;
-  width: 0.07em;
-  height: 0.78em;
-  margin-left: 0.06em;
-  vertical-align: baseline;
-  background: var(--caret);
-  animation: blink 1.2s step-end infinite;
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
+.banner {
+  max-width: 580px;
+  height: auto;
+  margin-inline: auto;
 }
 
 .tagline {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   font-size: 1.0625rem;
   color: var(--fg-muted);
 }

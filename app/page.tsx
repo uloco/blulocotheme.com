@@ -3,6 +3,8 @@ import { Logo, TerminalGlyph } from "@/components/Logo";
 import { CodeWindow } from "@/components/CodeWindow";
 import { PaletteTable } from "@/components/PaletteTable";
 import { Snippet } from "@/components/Snippet";
+import { ColorExperiments } from "@/components/ColorExperiments";
+import { ThemedImage } from "@/components/ThemedImage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { formatCount, getStars, totalStars, type Stars } from "@/lib/github";
 import {
@@ -26,7 +28,15 @@ export default async function Home() {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <a href="#top" className={styles.brand}>
-            <Image src="/logo.svg" alt="" width={26} height={26} priority />
+            <ThemedImage
+              darkSrc="/icon-dark.svg"
+              lightSrc="/icon-light.svg"
+              alt=""
+              width={26}
+              height={26}
+              priority
+              className={styles.brandIcon}
+            />
             <span>bluloco</span>
           </a>
           <nav className={styles.nav}>
@@ -43,8 +53,16 @@ export default async function Home() {
 
       <main id="top">
         <section className={styles.hero}>
-          <p className={styles.eyebrow}>Since 2017</p>
-          <h1 className={styles.title}>Bluloco</h1>
+          <h1 className={styles.srOnly}>Bluloco Theme</h1>
+          <ThemedImage
+            darkSrc="/banner-dark.svg"
+            lightSrc="/banner-light.svg"
+            alt="Bluloco Theme"
+            width={920}
+            height={280}
+            priority
+            className={styles.banner}
+          />
           <p className={styles.tagline}>
             A fancy and sophisticated dark and light color scheme for your favorite editors and
             terminals.
@@ -75,6 +93,9 @@ export default async function Home() {
             This page uses the Bluloco palette. Toggle dark/light up top to see the other one.
           </p>
         </section>
+
+        {/* DEBUG: color experiments. Remove once you've picked. */}
+        <ColorExperiments />
 
         <Section
           id="editors"
@@ -182,7 +203,14 @@ export default async function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.footerBrand}>
-            <Image src="/logo.svg" alt="" width={30} height={30} />
+            <ThemedImage
+              darkSrc="/icon-dark.svg"
+              lightSrc="/icon-light.svg"
+              alt=""
+              width={30}
+              height={30}
+              className={styles.brandIcon}
+            />
             <p>
               Made by{" "}
               <a href={links.author} className={styles.link}>

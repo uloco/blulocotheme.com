@@ -1,0 +1,168 @@
+/* DEBUG styles for color experiments. Delete alongside the component. */
+
+.wrap {
+  max-width: var(--max-width);
+  margin: 4rem auto;
+  padding: 2rem 1.5rem;
+  border: 2px dashed var(--syn-type);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.heading {
+  font-size: 1.25rem;
+  color: var(--syn-type);
+  margin-bottom: 2rem;
+}
+
+.experiment {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.label {
+  font-size: 1rem;
+  color: var(--fg-bright);
+}
+
+.desc {
+  font-size: 0.8125rem;
+  color: var(--fg-muted);
+  margin-top: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.toggle {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 550;
+  color: var(--accent);
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  border-color: var(--border-strong);
+}
+
+/* ── A: Edge rails ───────────────────────────────── */
+
+.rail {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.railLeft {
+  left: 0;
+}
+
+.railRight {
+  right: 0;
+}
+
+.railBlock {
+  flex: 1;
+  opacity: 0.7;
+}
+
+/* ── B: Parallax strips ──────────────────────────── */
+
+.parallaxCol {
+  position: fixed;
+  top: -100px;
+  width: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.parallaxLeft {
+  left: 0;
+}
+
+.parallaxRight {
+  right: 0;
+}
+
+.parallaxBar {
+  width: 6px;
+  height: 120px;
+  border-radius: 0 3px 3px 0;
+  opacity: 0.6;
+  will-change: transform;
+}
+
+.parallaxRight .parallaxBar {
+  border-radius: 3px 0 0 3px;
+}
+
+/* ── C: Hero bar ─────────────────────────────────── */
+
+.heroBar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 1rem 0;
+}
+
+.heroBarPill {
+  width: 52px;
+  height: 8px;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+/* ── D: Glow edges ───────────────────────────────── */
+
+.glowCol {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.glowLeft {
+  left: -40px;
+}
+
+.glowRight {
+  right: -40px;
+}
+
+.glowBlob {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.2;
+}
+
+/* ── E: Eyebrow preview ─────────────────────────── */
+
+.eyebrowRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.eyebrowSample {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
