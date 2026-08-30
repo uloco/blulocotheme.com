@@ -82,28 +82,51 @@
   border-right: none;
 }
 
-/* Code */
+/* Code
+ *
+ * Markup comes from Shiki (see lib/highlight.ts). Each token carries
+ * --shiki-light and --shiki-dark, so the rules below just choose which variable
+ * is live. Line numbers are drawn with a CSS counter rather than extra markup.
+ *
+ * The colours are the theme's real values. Comments land at 2.69:1 against the
+ * editor background, which fails WCAG AA. That is deliberate: it is exactly how
+ * Bluloco looks in an editor, where comments are meant to recede. Brightening
+ * them here would misrepresent the product this page is selling. Site chrome
+ * outside this window uses the accessible --fg-muted instead.
+ */
 
 .code {
+  overflow-x: auto;
+}
+
+.code :global(pre.shiki) {
   padding: 1rem 0;
+  margin: 0;
   font-size: 0.8125rem;
   line-height: 1.7;
-  overflow-x: auto;
-  /* Tabs would render at the browser default of 8. */
-  tab-size: 2;
+  /* The theme file's own background would fight the window chrome. */
+  background: transparent !important;
+  counter-reset: line;
 }
 
-.code code {
+.code :global(pre.shiki code) {
   display: block;
   min-width: max-content;
+  padding-right: 1.5rem;
 }
 
-.line {
-  display: flex;
+/* Shiki separates .line spans with real newline text nodes. Inside a <pre>
+   those newlines already break the line, so the spans must stay inline. Making
+   them block would render each row twice as tall. */
+.code :global(pre.shiki .line) {
+  display: inline;
 }
 
-.gutter {
-  flex-shrink: 0;
+/* Gutter */
+.code :global(pre.shiki .line)::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
   width: 3.25rem;
   padding-right: 1.25rem;
   text-align: right;
@@ -111,69 +134,39 @@
   user-select: none;
 }
 
-.content {
-  padding-right: 1.5rem;
-  white-space: pre;
-  color: var(--fg);
+/* Light is the default; dark wins when forced or when the OS prefers it. */
+.code :global(pre.shiki),
+.code :global(pre.shiki span) {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
 }
 
-/* Scopes.
- *
- * These are the theme's real values, straight from the VSCode sources. Some of
- * them fail WCAG AA against the editor background: comments and line numbers
- * sit at 2.69:1 and markup tags at 4.43:1. That is deliberate and it is exactly
- * how the theme looks in an editor, where comments are meant to recede.
- * Brightening them here would misrepresent the product this page is selling.
- * Site chrome outside this window uses the accessible --fg-muted instead.
- */
+:global(html[data-theme="dark"]) .code :global(pre.shiki),
+:global(html[data-theme="dark"]) .code :global(pre.shiki span) {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+}
 
-.comment {
-  color: var(--syn-comment);
-  font-style: italic;
-}
-.keyword {
-  color: var(--syn-keyword);
-}
-.function {
-  color: var(--syn-function);
-}
-.property {
-  color: var(--syn-property);
-}
-.string {
-  color: var(--syn-string);
-}
-.number {
-  color: var(--syn-number);
-}
-.constant {
-  color: var(--syn-constant);
-}
-.tag {
-  color: var(--syn-tag);
-}
-.attribute {
-  color: var(--syn-attribute);
-}
-.type {
-  color: var(--syn-type);
-}
-.operator {
-  color: var(--syn-operator);
-}
-.punct {
-  color: var(--fg);
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme="light"])) .code :global(pre.shiki),
+  :global(html:not([data-theme="light"])) .code :global(pre.shiki span) {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+  }
 }
 
 @media (max-width: 640px) {
-  .code {
+  .code :global(pre.shiki) {
     font-size: 0.6875rem;
   }
-  .gutter {
+  .code :global(pre.shiki .line)::before {
     width: 2.5rem;
     padding-right: 0.875rem;
   }
   .tabs {
-    display: none;
+    overflow-x: auto;
   }
 }
