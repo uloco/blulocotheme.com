@@ -1,0 +1,197 @@
+.window {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* Title bar */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.875rem;
+  height: 38px;
+  background: var(--border-strong);
+  border-bottom: 1px solid var(--border);
+}
+
+.lights {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.lights i {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--fg-faint);
+}
+
+.filename {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  /* On --border-strong the muted grey drops to 3.3:1, so use the bright fg. */
+  color: var(--fg-bright);
+  /* Centred in the title bar, ignoring the traffic lights. */
+  margin-inline: auto;
+  padding-inline-end: 45px;
+}
+
+/* Tab strip */
+
+.tabs {
+  display: flex;
+  background: var(--sunken);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.tab,
+.tabActive {
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+
+.tabActive {
+  color: var(--fg-bright);
+  background: var(--bg);
+  /* Matches tab.activeBorderTop in the theme. */
+  box-shadow: inset 0 2px 0 var(--syn-tag);
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+/* Code */
+
+.code {
+  padding: 1rem 0;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  /* Tabs would render at the browser default of 8. */
+  tab-size: 2;
+}
+
+.code code {
+  display: block;
+  min-width: max-content;
+}
+
+.line {
+  display: flex;
+}
+
+.line[data-active] {
+  background: color-mix(in srgb, var(--syn-tag) 8%, transparent);
+}
+
+.gutter {
+  flex-shrink: 0;
+  width: 3.25rem;
+  padding-right: 1.25rem;
+  text-align: right;
+  color: var(--syn-comment);
+  user-select: none;
+}
+
+.line[data-active] .gutter {
+  /* editorLineNumber.activeForeground */
+  color: var(--caret);
+}
+
+.content {
+  padding-right: 1.5rem;
+  white-space: pre;
+  color: var(--fg);
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--caret);
+  animation: blink 1.2s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Scopes.
+ *
+ * These are the theme's real values, straight from the VSCode sources. Some of
+ * them fail WCAG AA against the editor background: comments and line numbers
+ * sit at 2.69:1 and markup tags at 4.43:1. That is deliberate and it is exactly
+ * how the theme looks in an editor, where comments are meant to recede.
+ * Brightening them here would misrepresent the product this page is selling.
+ * Site chrome outside this window uses the accessible --fg-muted instead.
+ */
+
+.comment {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+.keyword {
+  color: var(--syn-keyword);
+}
+.function {
+  color: var(--syn-function);
+}
+.property {
+  color: var(--syn-property);
+}
+.string {
+  color: var(--syn-string);
+}
+.number {
+  color: var(--syn-number);
+}
+.constant {
+  color: var(--syn-constant);
+}
+.tag {
+  color: var(--syn-tag);
+}
+.attribute {
+  color: var(--syn-attribute);
+}
+.type {
+  color: var(--syn-type);
+}
+.operator {
+  color: var(--syn-operator);
+}
+.punct {
+  color: var(--fg);
+}
+
+@media (max-width: 640px) {
+  .code {
+    font-size: 0.6875rem;
+  }
+  .gutter {
+    width: 2.5rem;
+    padding-right: 0.875rem;
+  }
+  .tabs {
+    display: none;
+  }
+}
