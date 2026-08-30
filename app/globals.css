@@ -13,6 +13,10 @@
 :root {
   color-scheme: light dark;
 
+  /* Iosevka is self-hosted (see layout.tsx), so unlike --font-sans there is no
+     next/font variable to inherit. Declared here instead. */
+  --font-mono: "Iosevka", ui-monospace, monospace;
+
   /* Syntax scopes */
   --syn-comment: light-dark(#a0a1a7, #636d83);
   --syn-keyword: light-dark(#0098dd, #10b1fe);
@@ -122,11 +126,11 @@ a {
 code,
 pre,
 kbd {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  /* JetBrains Mono ligates === and => into single glyphs. The code sample is
-     here to show off syntax colors, so keep every character distinct. */
-  font-variant-ligatures: none;
-  font-feature-settings: "liga" 0, "calt" 0;
+  font-family: var(--font-mono);
+  /* Iosevka ligates ==, =>, !=, ?. and friends. Kept on: the code sample is
+     meant to look like a real editor, and this is how it looks in one. */
+  font-variant-ligatures: contextual;
+  font-feature-settings: "liga" 1, "calt" 1;
 }
 
 button {
@@ -135,6 +139,15 @@ button {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+/* iOS Safari paints a translucent blue box on tap and can leave it flickering
+   during a drag. Every interactive element here already has its own pressed or
+   active styling, so the default is only noise. */
+a,
+button,
+[role="tab"] {
+  -webkit-tap-highlight-color: transparent;
 }
 
 svg {

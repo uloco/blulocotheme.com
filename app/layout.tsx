@@ -1,16 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+// Iosevka is self-hosted: it is not on Google Fonts, so next/font cannot load
+// it. Only the weights actually used, plus italic for the theme's italic
+// variants, which Shiki emits as font-style on the token spans.
+import "@fontsource/iosevka/400.css";
+import "@fontsource/iosevka/400-italic.css";
+import "@fontsource/iosevka/700.css";
 import "./globals.css";
 
 const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
   display: "swap",
 });
 
@@ -74,7 +74,7 @@ try {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={sans.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
