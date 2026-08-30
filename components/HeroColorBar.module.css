@@ -6,9 +6,9 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  gap: 6px;
+  gap: 10px;
   /* Enough room for the magnified pill so layout stays stable. */
-  height: 56px;
+  height: 60px;
   cursor: pointer;
 }
 
@@ -98,8 +98,8 @@
 
 @media (max-width: 640px) {
   .bar {
-    gap: 4px;
-    height: 44px;
+    gap: 6px;
+    height: 48px;
   }
   .pill {
     width: 24px;
