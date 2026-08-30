@@ -194,13 +194,31 @@
   margin-bottom: 2rem;
 }
 
+/* Section eyebrows carry a per-section syntax colour, set as --eyebrow.
+ *
+ * On the dark background the raw syntax colours already clear WCAG AA at 11px
+ * (keyword is 5.8:1, string 10:1), so they are used as-is and stay vivid.
+ * On the light background the same colours only reach ~3:1, so there they get
+ * darkened instead. Mixing toward --fg in both modes was the first attempt and
+ * it washed the colour out completely, so the two modes are handled separately.
+ */
 .sectionEyebrow {
   font-family: var(--font-mono), monospace;
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--eyebrow, var(--accent));
+}
+
+:global(html[data-theme="light"]) .sectionEyebrow {
+  color: color-mix(in oklab, var(--eyebrow, var(--accent)) 82%, #000);
+}
+
+@media (prefers-color-scheme: light) {
+  :global(html:not([data-theme="dark"])) .sectionEyebrow {
+    color: color-mix(in oklab, var(--eyebrow, var(--accent)) 82%, #000);
+  }
 }
 
 .sectionHeading {

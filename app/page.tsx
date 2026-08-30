@@ -7,6 +7,7 @@ import { Snippet } from "@/components/Snippet";
 import { ThemedImage } from "@/components/ThemedImage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { formatCount, getStars, totalStars, type Stars } from "@/lib/github";
+import { getSamples } from "@/lib/highlight";
 import {
   community,
   editors,
@@ -22,6 +23,7 @@ import styles from "./page.module.css";
 export default async function Home() {
   const stars = await getStars();
   const total = totalStars(stars);
+  const samples = await getSamples();
 
   return (
     <>
@@ -90,7 +92,7 @@ export default async function Home() {
         </section>
 
         <section className={styles.showcase}>
-          <CodeWindow />
+          <CodeWindow samples={samples} />
           <p className={styles.showcaseNote}>
             This page uses the Bluloco palette. Toggle dark/light up top to see the other one.
           </p>
@@ -148,7 +150,7 @@ export default async function Home() {
         <Section
           id="tools"
           eyebrow="Command line"
-          eyebrowColor="var(--syn-string)"
+          eyebrowColor="var(--syn-property)"
           heading="The rest of your toolchain"
           lead="Configs for the tools next to the editor."
         >
@@ -267,7 +269,10 @@ function Section({
   return (
     <section id={id} className={styles.section}>
       <div className={styles.sectionHead}>
-        <p className={styles.sectionEyebrow} style={eyebrowColor ? { color: eyebrowColor } : undefined}>
+        <p
+          className={styles.sectionEyebrow}
+          style={eyebrowColor ? ({ "--eyebrow": eyebrowColor } as React.CSSProperties) : undefined}
+        >
           {eyebrow}
         </p>
         <h2 className={styles.sectionHeading}>{heading}</h2>
