@@ -24,20 +24,22 @@
   flex-direction: column;
 }
 
-/* Wide blurred copy. Anchored at the viewport edge so it is solid where it
-   meets the strip, then a mask fades it to transparent going inward. */
+/* Soft ambient halo behind the strip. Heavy blur so individual scope
+   boundaries dissolve into a gentle colour wash. Kept subtle — the strip
+   is the visual anchor, the glow is atmosphere only. */
 .glow {
-  width: 80px;
-  filter: blur(32px);
+  width: 100px;
+  filter: blur(55px);
+  opacity: 0.35;
 }
 
 .left .glow {
-  left: -16px;
+  left: -50px;
   mask-image: linear-gradient(to right, black, transparent);
 }
 
 .right .glow {
-  right: -16px;
+  right: -50px;
   mask-image: linear-gradient(to left, black, transparent);
 }
 
@@ -61,14 +63,15 @@
 
 @media (max-width: 768px) {
   .glow {
-    width: 56px;
-    filter: blur(22px);
+    width: 72px;
+    filter: blur(40px);
+    opacity: 0.28;
   }
   .left .glow {
-    left: -12px;
+    left: -36px;
   }
   .right .glow {
-    right: -12px;
+    right: -36px;
   }
   .strip {
     width: 4px;
