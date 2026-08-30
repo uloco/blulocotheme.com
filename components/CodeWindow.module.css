@@ -166,7 +166,9 @@
     width: 2.5rem;
     padding-right: 0.875rem;
   }
-  .tabs {
-    overflow-x: auto;
+  /* 8 tabs is too many to scroll on mobile. Show only the first 6. */
+  .tab:nth-child(n + 7),
+  .tabActive:nth-child(n + 7) {
+    display: none;
   }
 }

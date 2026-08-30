@@ -248,6 +248,84 @@ func (p *Palette) String() string {
 \treturn fmt.Sprintf("%s (%d scopes)", p.Variant, len(p.Scopes))
 }`,
   },
+  {
+    tab: "Swift",
+    filename: "Palette.swift",
+    lang: "swift",
+    code: `import Foundation
+
+enum Variant: String {
+    case dark, light
+}
+
+struct Scope {
+    let name: String
+    let hex: String
+}
+
+/// A resolved Bluloco variant with its scopes.
+struct Palette: CustomStringConvertible {
+    let variant: Variant
+    var contrast: Double = 7.1
+    var scopes: [Scope] = []
+
+    func resolve(_ name: String) -> String? {
+        scopes.first { $0.name.caseInsensitiveCompare(name) == .orderedSame }?.hex
+    }
+
+    var description: String {
+        "\\(variant.rawValue) (\\(scopes.count) scopes)"
+    }
+}
+
+let theme = Palette(variant: .dark, scopes: [
+    Scope(name: "keyword", hex: "#10b1fe"),
+    Scope(name: "function", hex: "#3fc56b"),
+])
+
+for scope in theme.scopes {
+    print("\\(scope.name.padding(toLength: 10, withPad: " ", startingAt: 0)) \\(scope.hex)")
+}`,
+  },
+  {
+    tab: "Kotlin",
+    filename: "Palette.kt",
+    lang: "kotlin",
+    code: `package palette
+
+data class Scope(val name: String, val hex: String)
+
+enum class Variant { Dark, Light }
+
+class Palette(
+    val variant: Variant,
+    val contrast: Double = 7.1,
+    private val scopes: MutableList<Scope> = mutableListOf(),
+) {
+    /** Returns the hex for a scope, or null if not found. */
+    fun resolve(name: String): String? =
+        scopes.firstOrNull { it.name.equals(name, ignoreCase = true) }?.hex
+
+    fun add(name: String, hex: String) {
+        scopes += Scope(name, hex)
+    }
+
+    override fun toString(): String =
+        "\${variant.name.lowercase()} (\${scopes.size} scopes)"
+}
+
+fun main() {
+    val theme = Palette(Variant.Dark).apply {
+        add("keyword", "#10b1fe")
+        add("function", "#3fc56b")
+        add("string", "#f9c859")
+    }
+
+    for ((name, hex) in theme.scopes) {
+        println("\${name.padEnd(10)} $hex")
+    }
+}`,
+  },
 ];
 
 async function loadTheme(file: string): Promise<ThemeRegistrationRaw> {
