@@ -24,19 +24,21 @@
   flex-direction: column;
 }
 
-/* Wide, heavily blurred copy. Bleeds inward over the page background. */
+/* Wide blurred copy. Anchored at the viewport edge so it is solid where it
+   meets the strip, then a mask fades it to transparent going inward. */
 .glow {
-  width: 90px;
-  filter: blur(36px);
-  opacity: 0.45;
+  width: 80px;
+  filter: blur(32px);
 }
 
 .left .glow {
-  left: -48px;
+  left: -16px;
+  mask-image: linear-gradient(to right, black, transparent);
 }
 
 .right .glow {
-  right: -48px;
+  right: -16px;
+  mask-image: linear-gradient(to left, black, transparent);
 }
 
 /* Sharp core. Narrow, slightly soft edge so it does not look like a border. */
@@ -59,15 +61,14 @@
 
 @media (max-width: 768px) {
   .glow {
-    width: 64px;
-    filter: blur(26px);
-    opacity: 0.35;
+    width: 56px;
+    filter: blur(22px);
   }
   .left .glow {
-    left: -36px;
+    left: -12px;
   }
   .right .glow {
-    right: -36px;
+    right: -12px;
   }
   .strip {
     width: 4px;
