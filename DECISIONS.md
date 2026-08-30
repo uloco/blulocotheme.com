@@ -306,12 +306,54 @@ An iPhone 13 simulator runs Safari against the dev server. Use it **only for
 touch-specific checks** — it burns a lot of context. Lessons learned:
 
 - Estimating tap coordinates from screenshots is unreliable and cost several
-  wasted rounds. The pills sit around y≈360 after loading `/#top` and swiping up
+  wasted rounds. The pills sit around y≈365 after loading `/#top` and swiping up
   120px from y=400, but verify before trusting it.
 - iOS momentum scrolling overshoots badly; small swipes from a low start point
   are more predictable than large ones.
 - Chrome with `390x844x3,mobile,touch` emulation reports `(hover: none)` and is
   fine for verifying the *logic*. Use it first, then confirm on the simulator.
+- Screenshots come back at 195×422 for a 390×844 screen, so **multiply image
+  coordinates by 2** to get tap coordinates.
+
+### OPEN BUG: colour bar does not respond to touch in the simulator
+
+**Status: unresolved. This is where the next session should start.**
+
+The logic is verified correct in Chrome. With `390x844x3,mobile,touch` emulation:
+tapping inside the bar but *below* a pill selects the nearest pill and expands it
+to 100px, a second tap collapses it, and tapping a different pill moves the
+selection. All measured, all passing.
+
+On the iOS simulator, nothing happens: no tap response, no swipe response.
+
+Hypotheses **already ruled out**:
+
+| Ruled out | How |
+| --- | --- |
+| Hydration or JS broken | The theme toggle works on the simulator. |
+| Wrong tap coordinates | The theme toggle at (352, 60) responds; the pill row was located from a screenshot and tapped dead centre. |
+| Tiny touch target | Fixed anyway — the handler is on the 56px bar now, and Chrome confirms a below-the-pill tap works. |
+| Stale cached JS | Reproduced against `next start -p 3100`, whose chunk filenames are content-hashed. |
+| `GlowRails` overlay intercepting | `.rail` sets `pointer-events: none`, which the `.glow` children inherit. |
+
+Leading hypothesis: the simulator reports **`(hover: hover)` as true** (its
+pointer is trackpad-driven), so `handleClick` early-returns, while no real hover
+movement occurs to drive the `pointermove` path. That would explain the click
+doing nothing. It does **not** explain `onTouchMove` failing during a horizontal
+swipe, so something else may also be wrong.
+
+Next step, and do this **before** changing any more code: instrument instead of
+guessing. Add a temporary readout inside `HeroColorBar` showing
+`matchMedia("(hover: hover)").matches` plus counters for `pointermove`,
+`touchmove` and `click`, then screenshot it on the simulator. That distinguishes
+"events never arrive" from "events arrive and the guard rejects them" in one shot.
+A draft of this instrumentation was written and then reverted to keep the tree
+clean; rewrite it rather than hunting for it.
+
+If it turns out to be a simulator artifact, verify on a real iPhone and consider
+replacing the `matchMedia` guard with a `pointerup`-based check on
+`e.pointerType`, which reflects the actual input device rather than the display's
+capabilities.
 
 ---
 
@@ -414,17 +456,34 @@ Mistakes already made and fixed. Re-introducing any of these is a regression.
 ## 11. Verification
 
 ```sh
-npm run lint     # must be clean
-npm run build    # must be clean
-npm run dev      # http://localhost:3000
+npm run lint      # must be clean
+npm run build     # must be clean
+npm run dev       # http://localhost:3000
+npx next start -p 3100   # production, hashed chunks, for simulator tests
 ```
 
 Before calling anything done, check in a browser:
 
 - both themes, via the 3-way toggle, and with the OS preference
 - reload with a stored theme, confirm no flash of the wrong palette
-- 390px viewport, confirm no horizontal overflow
-- all four code tabs
-- hover and tap a hero colour pill
+- 390px viewport, confirm `documentElement.scrollWidth === clientWidth`; any
+  horizontal overflow makes mobile Chrome shrink-to-fit the whole page
+- all eight code tabs, and that only six show below 640px
+- hover a colour pill: neighbours move aside, and neither the caption nor the
+  code window shifts vertically
 - console clean
 - Lighthouse: accessibility should be 97 with failures only inside the code window
+
+---
+
+## 12. Next session: start here
+
+1. **Open bug**: the colour bar does not respond to touch on the iOS simulator.
+   Full diagnosis and the ruled-out list are in §7a. Instrument before editing.
+2. **Verify on a real iPhone** once the simulator question is settled.
+3. Optional polish, in rough priority order:
+   - Unify icon weight; brand logos are filled, glyphs are stroked (§8).
+   - Decide the "1M+ installs" stat: combined, or split per variant (§9).
+4. Infrastructure still outstanding: set `GITHUB_TOKEN` on Vercel, and point the
+   netcup DNS at Vercel (§9 has the exact records).
+
