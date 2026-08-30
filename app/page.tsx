@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { Logo, TerminalGlyph } from "@/components/Logo";
 import { CodeWindow } from "@/components/CodeWindow";
+import { GlowRails } from "@/components/GlowRails";
+import { HeroColorBar } from "@/components/HeroColorBar";
 import { PaletteTable } from "@/components/PaletteTable";
 import { Snippet } from "@/components/Snippet";
-import { ColorExperiments } from "@/components/ColorExperiments";
 import { ThemedImage } from "@/components/ThemedImage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { formatCount, getStars, totalStars, type Stars } from "@/lib/github";
@@ -25,6 +25,7 @@ export default async function Home() {
 
   return (
     <>
+      <GlowRails />
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <a href="#top" className={styles.brand}>
@@ -85,6 +86,7 @@ export default async function Home() {
             <Stat value={terminalCount.toString()} label="terminals" />
             <Stat value="4" label="variants" />
           </dl>
+          <HeroColorBar />
         </section>
 
         <section className={styles.showcase}>
@@ -94,12 +96,10 @@ export default async function Home() {
           </p>
         </section>
 
-        {/* DEBUG: color experiments. Remove once you've picked. */}
-        <ColorExperiments />
-
         <Section
           id="editors"
           eyebrow="Editors"
+          eyebrowColor="var(--syn-keyword)"
           heading="Pick your editor"
           lead="Official ports. Dark and light, always."
         >
@@ -113,6 +113,7 @@ export default async function Home() {
         <Section
           id="terminals"
           eyebrow="Terminals"
+          eyebrowColor="var(--syn-function)"
           heading="Already in your terminal"
           lead="These ship Bluloco out of the box. Nothing to install."
         >
@@ -147,6 +148,7 @@ export default async function Home() {
         <Section
           id="tools"
           eyebrow="Command line"
+          eyebrowColor="var(--syn-string)"
           heading="The rest of your toolchain"
           lead="Configs for the tools next to the editor."
         >
@@ -166,6 +168,7 @@ export default async function Home() {
         <Section
           id="community"
           eyebrow="Community"
+          eyebrowColor="var(--syn-constant)"
           heading="Ported by others"
           lead="Not mine, but verified. Thanks to everyone here."
         >
@@ -186,6 +189,7 @@ export default async function Home() {
         <Section
           id="palette"
           eyebrow="Palette"
+          eyebrowColor="var(--syn-type)"
           heading="Thirteen scopes"
           lead="One color per meaning, consistent across every language. Click to copy."
         >
@@ -248,12 +252,14 @@ function Stat({ value, label }: { value: string; label: string }) {
 function Section({
   id,
   eyebrow,
+  eyebrowColor,
   heading,
   lead,
   children,
 }: {
   id: string;
   eyebrow: string;
+  eyebrowColor?: string;
   heading: string;
   lead: string;
   children: React.ReactNode;
@@ -261,7 +267,9 @@ function Section({
   return (
     <section id={id} className={styles.section}>
       <div className={styles.sectionHead}>
-        <p className={styles.sectionEyebrow}>{eyebrow}</p>
+        <p className={styles.sectionEyebrow} style={eyebrowColor ? { color: eyebrowColor } : undefined}>
+          {eyebrow}
+        </p>
         <h2 className={styles.sectionHeading}>{heading}</h2>
         <p className={styles.sectionLead}>{lead}</p>
       </div>

@@ -1,0 +1,23 @@
+.bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2.5rem;
+}
+
+.pill {
+  width: 52px;
+  height: 7px;
+  border-radius: 999px;
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .bar {
+    gap: 6px;
+  }
+  .pill {
+    width: 24px;
+    height: 5px;
+  }
+}
