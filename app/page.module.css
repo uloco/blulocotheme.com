@@ -86,6 +86,7 @@
 }
 
 .banner {
+  width: 100%;
   max-width: 580px;
   height: auto;
   margin-inline: auto;
