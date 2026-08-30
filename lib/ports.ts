@@ -102,7 +102,7 @@ code --install-extension uloco.theme-bluloco-light`,
 export const terminals: Port[] = [
   {
     name: "Ghostty",
-    blurb: "Built in, with both variants and optional switching alongside your system appearance.",
+    blurb: "Built in, with both variants and automatic system theme switching.",
     logo: "ghostty",
     repo: null,
     href: "https://ghostty.org/docs/config/reference#theme",
