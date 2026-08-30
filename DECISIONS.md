@@ -34,11 +34,29 @@ These were answered explicitly. Do not revisit without asking.
 | Deploy | Vercel. Config committed. |
 | Copy tone | Short, plain, no marketing language. Written to sound like the owner, not like an LLM. |
 
+### Copy rules
+
+The owner's `AGENTS.md` voice (blunt, clipped, fragments) applies to **messages
+and commits, not to the site copy**. Site copy should be natural and flowing.
+
+- Sentences stay simple and short, but **not choppy**. Avoid stacking two- and
+  three-word fragments: "Built in. Both variants. Nothing to install." was
+  explicitly rejected. Join them into one readable sentence.
+- Section names must stay generic enough to grow. "Command line" became
+  **"Tools"** because browser and other non-CLI ports will land there.
+- The colour bar caption describes the design philosophy, adapted from the
+  `bluloco.nvim` README ("comprehensive usage of syntax scopes and color
+  consistency, with due regards to aesthetics, contrast and readability").
+- **Leave the Community and Palette copy alone.** The owner likes both.
+
+
 ### Visual identity
 
 | Element | Decision |
 | --- | --- |
 | Hero | The combined **yin-yang banner** from `bluloco.nvim/screenshots/banner-{dark,light}.svg`. Replaces a text `<h1>`. The real `<h1>` is visually hidden for SEO. |
+| Hero layout | Banner, tagline and editor picker sit in a **card on `--sunken`**, the same panel colour the install snippets use, with a rounded border. Stats and the colour bar sit below it on the page background. |
+| Editor picker | **No editor is promoted.** A 4-across grid (2 on mobile) of Neovim / VS Code / Zed / JetBrains, each jumping to that editor's card via a `slug(name)` anchor. This replaced a "Get it for VS Code" primary button, which was removed on purpose — do not reintroduce a single-editor CTA. |
 | Header + footer icon | The **variant-specific** face: dark mascot (yellow eyes) in dark mode, light mascot (pink eyes) in light mode. From `theme-bluloco-{dark,light}/icon.svg`. |
 | Favicon | The **yin-yang** face, extracted from the banner (see §6). One file, works in both modes. |
 | Colour on the page | The page was too calm and grey. Fixed with three additions, all requested: glow rails, hero colour bar, coloured section eyebrows. |
@@ -118,9 +136,11 @@ Output uses `defaultColor: false`, which emits `--shiki-light` and
 `--shiki-dark` per token. CSS in `CodeWindow.module.css` picks the live one, so
 both variants ship in one payload and switch instantly.
 
-Tabs: **TSX, Python, Rust, CSS.** Real, self-contained snippets. The earlier
-version implied a `@bluloco/react` library that does not exist — do not write
-samples that imply an API the project does not ship.
+Tabs: **TSX, Python, Rust, CSS, HTML, Go, Swift, Kotlin.** Real, self-contained
+snippets. The earlier version implied a `@bluloco/react` library that does not
+exist — do not write samples that imply an API the project does not ship. Swift
+and Kotlin are tabs 7 and 8 and are **hidden below 640px** via
+`nth-child(n + 7)`, because eight tabs will not fit a phone without scrolling.
 
 Gotcha: Shiki separates `.line` spans with real newline text nodes. Inside a
 `<pre>` those already break the line, so the spans must stay `display: inline`.
@@ -128,6 +148,24 @@ Making them block renders every row at double height. Line numbers come from a
 CSS counter, not extra markup.
 
 If the themes change upstream, re-copy the two JSON files. Nothing else.
+
+### Fonts
+
+- Sans is **Inter** via `next/font/google`.
+- Mono is **Iosevka**, self-hosted through `@fontsource/iosevka` (400, 400-italic
+  and 700). It is not on Google Fonts, so `next/font` cannot fetch it. Italic is
+  included because the theme's italic variants make Shiki emit `font-style` on
+  token spans.
+- Because there is no `next/font` variable for it, `--font-mono` is declared by
+  hand in `globals.css` and already carries its fallbacks. Do not write
+  `var(--font-mono), monospace`.
+- **Ligatures are on** (`font-variant-ligatures: contextual`, `"liga" 1,
+  "calt" 1`). This was previously switched off for JetBrains Mono and has been
+  deliberately reversed: the code window is meant to look like a real editor.
+  `=>` renders as `⇒`, `===` as a single glyph.
+- Every code-ish surface resolves to `--font-mono`: the code window, snippets,
+  palette hexes, terminal chips, star badges and the colour-bar pill labels. The
+  one exception is the JetBrains numbered install steps, which are prose.
 
 ---
 
@@ -207,16 +245,73 @@ All ten combinations now measure ≥ 4.59:1. Measured values:
 | --- | --- | --- | --- |
 | Editors | keyword | 4.90 | 5.83 |
 | Terminals | function | 5.62 | 6.27 |
-| Command line | property | 7.44 | 5.64 |
+| Tools | property | 7.44 | 5.64 |
 | Community | constant | 7.64 | 4.59 |
 | Palette | type | 7.17 | 4.92 |
 
-Command line was originally the string yellow and only reached 3.82:1 in light
-mode. Yellow does not work as text on white; it was swapped to the property tan.
+The Tools eyebrow was originally the string yellow and only reached 3.82:1 in
+light mode. Yellow does not work as text on white; it was swapped to the
+property tan.
 
 When measuring contrast in the browser, note that `getComputedStyle().color`
 returns `oklab(...)` for `color-mix` values. Parsing that as RGB gives nonsense.
 Paint it to a 1×1 canvas and read the pixel back.
+
+### The star badge is a deliberate split
+
+The GitHub star count on each card: the **star glyph** is `--syn-string` yellow,
+the **number** stays `--fg-muted`. At 11px the raw yellow only reaches ~2.8:1 on
+`--sunken`, and the number is the part that has to be readable. Do not colour the
+number yellow without also darkening it.
+
+---
+
+## 7a. Touch behaviour
+
+The hero colour bar caused a long back-and-forth. What is true:
+
+- Pills are **20×14px** on mobile. That is far under the 44px minimum touch
+  target. **Taps are therefore handled on the whole 56px-tall bar**, not on the
+  pill: `onClick` on the bar maps the tap's x to the nearest pill and toggles it.
+  Do not move the toggle back onto the pill.
+- Swipe across the row tracks like hover. Two handlers on purpose:
+  `onPointerMove` (guarded by `pointerType === "mouse" || buttons > 0`) and
+  `onTouchMove` as a fallback, because iOS is not dependable about delivering
+  `pointermove` during a drag.
+- `touch-action: pan-y` on the bar so vertical scrolling still works while
+  horizontal drags are ours.
+- Mouse vs touch is decided by `window.matchMedia("(hover: hover)")` **read at
+  event time**, not by remembering the last `pointerType`. An earlier version
+  defaulted a `lastPointer` ref to `"mouse"`, so any device that never delivered
+  `pointerdown` had taps blocked forever.
+- `onFocus` only selects when `:focus-visible` matches, so keyboard works but a
+  tap's incidental focus does not fight the click. `onBlur` is guarded with
+  `prev === i ? null : prev` so blurring an old pill cannot clear a fresh tap.
+
+### Two iOS-specific gotchas, both fixed
+
+1. **Sticky `:hover`.** iOS keeps hover state after a tap, which left tool and
+   community icons stuck `--accent` blue while others stayed grey — it looked
+   like "some icons are coloured and some are not". **Every `:hover` rule in the
+   project is wrapped in `@media (hover: hover)`.** Keep it that way when adding
+   new ones.
+2. **Tap highlight.** iOS paints a translucent blue box on tap that flickers
+   during a drag. `-webkit-tap-highlight-color: transparent` is set globally on
+   `a`, `button` and `[role="tab"]` in `globals.css`, plus `user-select: none`
+   on the pills so a swipe cannot start a text selection.
+
+### Testing on the simulator
+
+An iPhone 13 simulator runs Safari against the dev server. Use it **only for
+touch-specific checks** — it burns a lot of context. Lessons learned:
+
+- Estimating tap coordinates from screenshots is unreliable and cost several
+  wasted rounds. The pills sit around y≈360 after loading `/#top` and swiping up
+  120px from y=400, but verify before trusting it.
+- iOS momentum scrolling overshoots badly; small swipes from a low start point
+  are more predictable than large ones.
+- Chrome with `390x844x3,mobile,touch` emulation reports `(hover: none)` and is
+  fine for verifying the *logic*. Use it first, then confirm on the simulator.
 
 ---
 
@@ -225,15 +320,27 @@ Paint it to a 1×1 canvas and read the pixel back.
 Everything listed was verified to exist and contain real theme files.
 
 **Official, listed:** Neovim, VS Code, Zed, JetBrains (`.icls` import), plus bat,
-lazygit and opencode under command line.
+lazygit and opencode under Tools.
 
 **Terminals:** Ghostty, WezTerm and kitty are featured because Bluloco ships with
 them. 20 more are listed as chips. The hero stat says 23 = 3 featured + 20 chips,
 matching the `terminal-themes/` directory count in `bluloco.nvim`. **If you edit
 one, edit the other** — `terminalCount` in `lib/ports.ts` derives from the array.
 
-**Community:** Helix, Vim (DanBradbury), Yazi, Neovim-without-lush, Replit,
-Mintty, Notepad++, Geany, yeet.
+**Community:** Helix, Vim (DanBradbury), Yazi, Replit, Mintty, Notepad++, Geany,
+yeet.
+
+### Icons
+
+Real brand paths exist in `lib/logo-paths.ts` for vscode, neovim, zed,
+jetbrains, ghostty, wezterm, helix, vim and replit only. Everything else uses a
+**hand-drawn stroke glyph** from `glyphPaths` in `components/Logo.tsx`
+(`terminal`, `git`, `file`, `spark`, `panes`, `code`). These are deliberately not
+attempts at brand logos: guessing simple-icons path data from memory produces
+garbled outlines. `<PortIcon logo glyph>` picks whichever an entry declares.
+
+Known cosmetic inconsistency: brand logos are filled, glyphs are stroked, so they
+carry slightly different visual weight. Not yet resolved.
 
 ### Deliberately excluded
 
@@ -250,12 +357,14 @@ Mintty, Notepad++, Geany, yeet.
 
 | Item | Notes |
 | --- | --- |
-| DNS | `blulocotheme.com` is still a German domain-parking page (`46.38.243.234`, no TLS listener). Needs repointing at Vercel. |
+| DNS | The domain is added in Vercel. At netcup: delete the old A record `46.38.243.234`, add `A @ 76.76.21.21`, and `CNAME www cname.vercel-dns.com` if www is wanted. Vercel issues the TLS cert once it resolves. |
 | `GITHUB_TOKEN` | Not set on Vercel. Without it the build falls back to the counts hardcoded in `lib/github.ts`. Unauthenticated GitHub is 60 req/hour. |
 | Open VSX | Published Bluloco is v3.6.0 vs v3.10.0 on the VS Code marketplace, ~4 years stale. Affects VSCodium, Gitpod, Cursor, Windsurf users. Upstream fix, not a site fix. |
 | `bluloco-zed/extension.toml` | `repository` points at `github.com/bluloco/bluloco-zed`, an org with no public repos. Dead link. Upstream fix. |
 | Hero stat "1M+ installs" | Marketplace shows 527k dark + 500k light. Open question whether to keep the combined figure or split it per variant. |
 | JetBrains plugin | Owner intends to publish an official one. The card copy should change when that lands. |
+| Icon weight | Brand logos are filled, hand-drawn glyphs are stroked, so they read at slightly different weights in the Tools and Community rows. Unresolved. |
+| Colour bar on touch | The tap-anywhere-on-the-bar fix is **not yet verified on the simulator**. See §7a. |
 
 ---
 
@@ -279,6 +388,26 @@ Mistakes already made and fixed. Re-introducing any of these is a regression.
 12. **Do not use `:first-of-type` to target one of several sibling spans** with
     the same class when other span types are present. It counts element type,
     not class. Bit the hero bar caption.
+13. **Do not size an image with `max-width` alone.** `.banner` had
+    `max-width: 580px` and no `width: 100%`, so the SVG rendered at its intrinsic
+    580px on a 390px screen. That gave the document 208px of horizontal overflow
+    and mobile Chrome shrink-to-fit the **entire page**, which read as "the site
+    is not mobile optimised at all".
+14. **Do not offset the glow rails outward with a negative `left`/`right`.** The
+    outward half is invisible (the body clips it) but `scrollWidth` still counts
+    it, which keeps the same shrink-to-fit bug alive. Anchor at `0`; `filter:
+    blur` does not affect layout, so it still bleeds softly.
+15. **Do not animate the colour pills with `transform: scale()`.** Transforms do
+    not affect layout, so scaled pills overlap their neighbours instead of
+    pushing them aside. Animate real `width`/`height` inside a **fixed-height**
+    bar: the fixed height is what stops the page below from jumping.
+16. **Do not write a `:hover` rule outside `@media (hover: hover)`.** See §7a.
+17. **Do not put the pill tap handler back on the pill.** See §7a.
+18. **Do not append `, monospace` after `var(--font-mono)`.** The variable
+    already carries its fallbacks.
+19. **Do not re-disable code ligatures.** They are on deliberately. See §5.
+20. **Do not invent simple-icons path data from memory.** Use a stroke glyph
+    instead. See §8.
 
 ---
 
