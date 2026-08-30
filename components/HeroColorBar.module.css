@@ -1,45 +1,43 @@
 .wrap {
   margin-top: 2.5rem;
+  padding-inline: 1rem;
 }
 
 .bar {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  gap: 10px;
-  /* Enough room for the magnified pill so layout stays stable. */
-  height: 60px;
+  gap: 8px;
+  padding: 0.5rem 1rem;
+  /* Enough room for the tallest magnified pill. */
+  min-height: 56px;
   cursor: pointer;
 }
 
 .pill {
-  position: relative;
-  width: 48px;
-  height: 18px;
-  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 0.5rem;
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  transform-origin: bottom center;
-  transition: transform 0.12s cubic-bezier(0.25, 0.1, 0.25, 1);
-  /* Prevent pill colour from leaking through text. */
+  /* Smooth width/height changes for the dock effect. */
+  transition: width 0.14s cubic-bezier(0.25, 0.1, 0.25, 1),
+              height 0.14s cubic-bezier(0.25, 0.1, 0.25, 1);
   overflow: hidden;
 }
 
-/* Scope label inside the pill. Only visible on the active magnified pill. */
+/* Scope label inside the active pill. */
 .label {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
   white-space: nowrap;
   pointer-events: none;
-  transition: opacity 0.1s ease;
 }
 
 /* Caption below the bar */
@@ -98,14 +96,14 @@
 
 @media (max-width: 640px) {
   .bar {
-    gap: 6px;
-    height: 48px;
+    gap: 5px;
+    padding: 0.25rem 0.5rem;
+    min-height: 44px;
   }
   .pill {
-    width: 24px;
-    height: 14px;
+    padding: 0 0.25rem;
   }
   .label {
-    font-size: 0.4375rem;
+    font-size: 0.5rem;
   }
 }
