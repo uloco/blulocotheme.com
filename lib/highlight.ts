@@ -167,6 +167,87 @@ impl fmt::Display for Palette {
   }
 }`,
   },
+  {
+    tab: "HTML",
+    filename: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bluloco Theme</title>
+    <link rel="stylesheet" href="/theme.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>Bluloco</h1>
+      <p>A fancy but yet sophisticated color scheme.</p>
+      <a href="#editors" class="cta">Get Started</a>
+    </header>
+
+    <section id="editors">
+      <h2>Editors</h2>
+      <ul>
+        <li data-stars="457">Neovim</li>
+        <li data-stars="1000000">VS Code</li>
+        <li data-stars="5">Zed</li>
+      </ul>
+    </section>
+
+    <!-- 23 terminals, 3 CLI tools -->
+    <footer>
+      <small>&copy; 2024 Bluloco</small>
+    </footer>
+  </body>
+</html>`,
+  },
+  {
+    tab: "Go",
+    filename: "palette.go",
+    lang: "go",
+    code: `package palette
+
+import (
+\t"fmt"
+\t"strings"
+)
+
+// Scope maps a token type to its hex colour.
+type Scope struct {
+\tName string
+\tHex  string
+}
+
+// Palette holds both variants of Bluloco.
+type Palette struct {
+\tVariant  string
+\tContrast float64
+\tScopes   []Scope
+}
+
+// New returns a palette with no scopes.
+func New(variant string) *Palette {
+\treturn &Palette{
+\t\tVariant:  variant,
+\t\tContrast: 7.1,
+\t}
+}
+
+// Resolve finds the hex for a scope name.
+func (p *Palette) Resolve(name string) (string, bool) {
+\tfor _, s := range p.Scopes {
+\t\tif strings.EqualFold(s.Name, name) {
+\t\t\treturn s.Hex, true
+\t\t}
+\t}
+\treturn "", false
+}
+
+func (p *Palette) String() string {
+\treturn fmt.Sprintf("%s (%d scopes)", p.Variant, len(p.Scopes))
+}`,
+  },
 ];
 
 async function loadTheme(file: string): Promise<ThemeRegistrationRaw> {
