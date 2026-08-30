@@ -16,7 +16,7 @@ const mono = JetBrains_Mono({
 
 const title = "Bluloco — a fancy and sophisticated color scheme";
 const description =
-  "Bluloco is a dark and light color scheme for Neovim, VS Code, Zed, JetBrains IDEs and 20+ terminals. Over a million installs.";
+  "Dark and light color scheme for Neovim, VS Code, Zed, JetBrains and 20+ terminals.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://blulocotheme.com"),

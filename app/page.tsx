@@ -46,8 +46,8 @@ export default async function Home() {
           <p className={styles.eyebrow}>Since 2017</p>
           <h1 className={styles.title}>Bluloco</h1>
           <p className={styles.tagline}>
-            A fancy and sophisticated color scheme. Dark and light. Built on a comprehensive use of
-            syntax scopes, with due regard to contrast and readability.
+            A fancy and sophisticated dark and light color scheme for your favorite editors and
+            terminals.
           </p>
           <div className={styles.actions}>
             <a
@@ -72,8 +72,7 @@ export default async function Home() {
         <section className={styles.showcase}>
           <CodeWindow />
           <p className={styles.showcaseNote}>
-            The page you are reading uses the palette below. Flip the switch up there to see the
-            other variant.
+            This page uses the Bluloco palette. Toggle dark/light up top to see the other one.
           </p>
         </section>
 
@@ -81,7 +80,7 @@ export default async function Home() {
           id="editors"
           eyebrow="Editors"
           heading="Pick your editor"
-          lead="Four official ports, all maintained here. Every one ships a dark and a light variant."
+          lead="Official ports. Dark and light, always."
         >
           <div className={`${styles.cards} ${styles.cardsWide}`}>
             {editors.map((port) => (
@@ -94,7 +93,7 @@ export default async function Home() {
           id="terminals"
           eyebrow="Terminals"
           heading="Already in your terminal"
-          lead="Bluloco ships with these. Nothing to download, just name the scheme."
+          lead="These ship Bluloco out of the box. Nothing to install."
         >
           <div className={styles.cards}>
             {terminals.map((port) => (
@@ -103,11 +102,11 @@ export default async function Home() {
           </div>
           <div className={styles.chips}>
             <p className={styles.chipsLabel}>
-              Also generated for {otherTerminals.length} more, and for even more targets via{" "}
+              Plus {otherTerminals.length} more via{" "}
               <a href="https://github.com/mbadolato/iTerm2-Color-Schemes" className={styles.link}>
                 iTerm2-Color-Schemes
               </a>
-              . The files live in{" "}
+              {" "}and{" "}
               <a
                 href="https://github.com/uloco/bluloco.nvim/tree/main/terminal-themes"
                 className={styles.link}
@@ -127,8 +126,8 @@ export default async function Home() {
         <Section
           id="tools"
           eyebrow="Command line"
-          heading="And the rest of the toolchain"
-          lead="Themes for the tools you keep open next to the editor."
+          heading="The rest of your toolchain"
+          lead="Configs for the tools next to the editor."
         >
           <ul className={styles.tools}>
             {tools.map((tool) => (
@@ -146,8 +145,8 @@ export default async function Home() {
         <Section
           id="community"
           eyebrow="Community"
-          heading="Ported by other people"
-          lead="Not maintained by me, but verified to work. Thanks to everyone on this list."
+          heading="Ported by others"
+          lead="Not mine, but verified. Thanks to everyone here."
         >
           <ul className={styles.community}>
             {community.map((port) => (
@@ -167,15 +166,15 @@ export default async function Home() {
           id="palette"
           eyebrow="Palette"
           heading="Thirteen scopes"
-          lead="Each color maps to a meaning and keeps that meaning in every language. Click a value to copy it."
+          lead="One color per meaning, consistent across every language. Click to copy."
         >
           <PaletteTable />
           <p className={styles.paletteNote}>
-            Want to check it against your own code? The{" "}
+            Test it against real code in the{" "}
             <a href={links.samples} className={styles.link}>
               syntax highlighting samples
             </a>{" "}
-            repo has snippets for a long list of languages.
+            repo.
           </p>
         </Section>
       </main>
@@ -185,12 +184,11 @@ export default async function Home() {
           <div className={styles.footerBrand}>
             <Image src="/logo.svg" alt="" width={30} height={30} />
             <p>
-              Bluloco is made by{" "}
+              Made by{" "}
               <a href={links.author} className={styles.link}>
                 Umut Topuzoğlu
               </a>
-              . Keeping it current with every editor release takes real time, so if it makes your day
-              nicer, consider{" "}
+              . If Bluloco makes your day a little nicer, consider{" "}
               <a href={links.buyMeACoffee} className={styles.link}>
                 buying a coffee
               </a>{" "}
@@ -202,7 +200,7 @@ export default async function Home() {
             </p>
           </div>
           <p className={styles.footerMeta}>
-            LGPL-3.0. Originally forked from One Dark, then taken somewhere else entirely.
+            LGPL-3.0. Started as a fork of One Dark, went somewhere else entirely.
           </p>
         </div>
       </footer>
