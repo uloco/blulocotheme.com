@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# blulocotheme.com
 
-## Getting Started
+Landing page for [Bluloco](https://github.com/uloco/bluloco.nvim), a dark and
+light color scheme for editors and terminals.
 
-First, run the development server:
+## Running it
 
-```bash
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm run build   # production build
+npm run lint    # eslint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How it is put together
 
-## Learn More
+Next.js App Router, plain CSS Modules, no UI dependencies.
 
-To learn more about Next.js, take a look at the following resources:
+| Path | What it holds |
+| --- | --- |
+| `lib/palette.ts` | The palette, extracted from the VSCode theme sources. Single source of truth. |
+| `lib/ports.ts` | Every port, install snippet and community link. Edit this to add a target. |
+| `lib/github.ts` | Star counts, fetched at build time with hardcoded fallbacks. |
+| `lib/logo-paths.ts` | Editor logos as single SVG paths, generated from simple-icons. |
+| `app/globals.css` | Design tokens. |
+| `app/opengraph-image.tsx` | Social card, rendered at build time from the palette. |
+| `assets/fonts/` | Inter woff files for the social card. Satori cannot read woff2. |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Theming
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Every token is declared once as `light-dark(light, dark)` and resolved through
+`color-scheme`:
 
-## Deploy on Vercel
+- no `data-theme` attribute: follows the OS setting
+- `data-theme="light"` or `"dark"`: forced, persisted in `localStorage`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+An inline script in `app/layout.tsx` applies the stored value before first
+paint, so the page never flashes the wrong palette.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Two deliberate choices
+
+**Contrast inside the code sample.** The hero code block uses the theme's real
+values. Comments and line numbers sit at 2.69:1 and markup tags at 4.43:1, which
+fails WCAG AA. That is how the theme actually looks in an editor, where comments
+are meant to recede, so brightening them here would misrepresent the product.
+Site chrome outside the code window uses the accessible `--fg-muted` instead.
+This is the only reason the Lighthouse accessibility score is 97 and not 100.
+
+**Star counts.** Unauthenticated GitHub allows 60 requests an hour. Set
+`GITHUB_TOKEN` in the environment for live counts. Without it the build falls
+back to the numbers recorded in `lib/github.ts`.
+
+## Adding a port
+
+Add an entry to `editors`, `terminals`, `tools` or `community` in
+`lib/ports.ts`. For a new logo, add the path to `lib/logo-paths.ts`. If the
+target has a repo you want a star count for, add it to the `fallback` map in
+`lib/github.ts`.
