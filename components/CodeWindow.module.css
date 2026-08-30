@@ -159,6 +159,29 @@
   }
 }
 
+/* Blinking caret inside the code, like a real editor. */
+.code :global(.caret) {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--caret);
+  animation: caret-blink 1s step-end infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code :global(.caret) {
+    animation: none;
+  }
+}
+
 @media (max-width: 640px) {
   .code :global(pre.shiki) {
     font-size: 0.6875rem;

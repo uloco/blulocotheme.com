@@ -344,17 +344,56 @@ export async function getSamples(): Promise<Sample[]> {
     langs: samples.map((s) => s.lang),
   });
 
-  const out = samples.map(({ tab, filename, lang, code }) => ({
-    tab,
-    filename,
-    html: highlighter.codeToHtml(code, {
+  const out = samples.map(({ tab, filename, lang, code }) => {
+    let html = highlighter.codeToHtml(code, {
       lang,
       themes: { light: "Bluloco Light", dark: "Bluloco Dark" },
       // Emit only CSS variables, no baked-in default colour, so the page
       // stylesheet decides which variant is visible.
       defaultColor: false,
-    }),
-  }));
+    });
+
+    // Inject a blinking caret at the end of a non-empty line near the middle.
+    const lineTag = '<span class="line">';
+    const lineClose = "</span>";
+    const parts = html.split(lineTag);
+    const count = parts.length - 1;
+    if (count > 2) {
+      const mid = Math.ceil(count / 2);
+      // Walk outward from the middle to find a line with visible content.
+      let pick = -1;
+      for (let d = 0; d <= count; d++) {
+        for (const candidate of [mid + d, mid - d]) {
+          if (candidate < 1 || candidate > count) continue;
+          // parts[candidate] starts right after the opening <span class="line">.
+          // An empty line has only "</span>" (possibly with a newline).
+          const content = parts[candidate];
+          const close = content.indexOf(lineClose);
+          const before = content.slice(0, close);
+          // Strip tags and whitespace to check for visible text.
+          if (before.replace(/<[^>]*>/g, "").trim().length > 0) {
+            pick = candidate;
+            break;
+          }
+        }
+        if (pick !== -1) break;
+      }
+      if (pick !== -1) {
+        // Find the final </span> that closes this .line (last one in the part).
+        const content = parts[pick];
+        const close = content.lastIndexOf(lineClose);
+        if (close !== -1) {
+          parts[pick] =
+            content.slice(0, close) +
+            '<span class="caret"></span>' +
+            content.slice(close);
+        }
+      }
+      html = parts.join(lineTag);
+    }
+
+    return { tab, filename, html };
+  });
 
   highlighter.dispose();
   return out;
