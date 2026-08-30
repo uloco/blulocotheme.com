@@ -26,26 +26,44 @@
   flex-direction: column;
 }
 
-/* Soft ambient halo behind the strip. Heavy blur so individual scope
-   boundaries dissolve into a gentle colour wash. */
+/* Soft ambient halo behind the strip. Wide and heavily blurred so the scope
+   boundaries dissolve completely into a colour wash. */
 .glow {
-  width: 100px;
-  filter: blur(55px);
-  opacity: 0.35;
+  width: 120px;
+  filter: blur(60px);
+  opacity: 0.28;
 }
 
 /* Anchored flush to the edge, never past it: a negative offset here would add
    real overflow, which makes mobile Chrome shrink-to-fit the whole page. The
    outward half of the blur was clipped by the body anyway. Blur itself does not
-   affect layout, so it can still bleed softly. */
+   affect layout, so it can still bleed softly.
+
+   The mask uses several stops rather than a plain two-stop gradient: a linear
+   alpha ramp reads as a visible edge partway in, these stops fall off gradually
+   so it fades into the background instead. */
 .left .glow {
   left: 0;
-  mask-image: linear-gradient(to right, black, transparent);
+  mask-image: linear-gradient(
+    to right,
+    rgb(0 0 0) 0%,
+    rgb(0 0 0 / 0.72) 22%,
+    rgb(0 0 0 / 0.38) 48%,
+    rgb(0 0 0 / 0.14) 72%,
+    transparent 100%
+  );
 }
 
 .right .glow {
   right: 0;
-  mask-image: linear-gradient(to left, black, transparent);
+  mask-image: linear-gradient(
+    to left,
+    rgb(0 0 0) 0%,
+    rgb(0 0 0 / 0.72) 22%,
+    rgb(0 0 0 / 0.38) 48%,
+    rgb(0 0 0 / 0.14) 72%,
+    transparent 100%
+  );
 }
 
 /* Sharp core. Narrow, slightly soft edge so it does not look like a border. */
@@ -68,9 +86,9 @@
 
 @media (max-width: 768px) {
   .glow {
-    width: 48px;
-    filter: blur(30px);
-    opacity: 0.22;
+    width: 68px;
+    filter: blur(38px);
+    opacity: 0.2;
   }
   .strip {
     width: 4px;
