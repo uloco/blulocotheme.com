@@ -59,9 +59,10 @@
 .nav a {
   transition: color 0.15s var(--ease);
 }
-
-.nav a:hover {
-  color: var(--fg-bright);
+@media (hover: hover) {
+  .nav a:hover {
+    color: var(--fg-bright);
+  }
 }
 
 /* Hero */
@@ -69,7 +70,7 @@
 .hero {
   max-width: var(--max-width);
   margin-inline: auto;
-  padding: 4rem 1.5rem 3rem;
+  padding: 2.5rem 1.5rem 3rem;
   text-align: center;
 }
 
@@ -92,52 +93,59 @@
   margin-inline: auto;
 }
 
+/* The hero sits on the sunken panel colour, the same one the install snippets
+   use, so the top of the page reads as a panel rather than as bare background. */
+.heroCard {
+  padding: 3rem 1.5rem 2.25rem;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
 .tagline {
-  margin-top: 1.5rem;
+  max-width: 34rem;
+  margin: 1.5rem auto 0;
   font-size: 1.0625rem;
   color: var(--fg-muted);
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 2rem;
+/* Editor picker. No single editor is promoted; each one jumps to its card. */
+.picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.625rem;
+  max-width: 40rem;
+  margin: 2rem auto 0;
 }
 
-.primary,
-.secondary {
+.pickerItem {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  height: 42px;
-  padding-inline: 1.125rem;
-  border-radius: 8px;
-  font-size: 0.9375rem;
+  height: 46px;
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 550;
-  border: 1px solid transparent;
-  transition: background-color 0.15s var(--ease), border-color 0.15s var(--ease),
-    color 0.15s var(--ease);
-}
-
-.primary {
-  color: var(--accent-contrast);
-  background: var(--accent);
-}
-
-.primary:hover {
-  background: var(--accent-hover);
-}
-
-.secondary {
+  white-space: nowrap;
   color: var(--fg-bright);
-  background: var(--surface);
-  border-color: var(--border);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.15s var(--ease), color 0.15s var(--ease),
+    background-color 0.15s var(--ease);
+}
+@media (hover: hover) {
+  .pickerItem:hover {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
 }
 
-.secondary:hover {
-  border-color: var(--border-strong);
+.pickerNote {
+  margin-top: 1.125rem;
+  font-size: 0.8125rem;
+  color: var(--fg-muted);
 }
 
 .stats {
@@ -204,7 +212,7 @@
  * it washed the colour out completely, so the two modes are handled separately.
  */
 .sectionEyebrow {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -259,9 +267,10 @@
   box-shadow: var(--shadow);
   transition: border-color 0.15s var(--ease);
 }
-
-.card:hover {
-  border-color: var(--border-strong);
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--border-strong);
+  }
 }
 
 .cardHead {
@@ -286,13 +295,20 @@
   align-items: center;
   gap: 0.3125rem;
   padding: 0.1875rem 0.5rem;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.6875rem;
   color: var(--fg-muted);
   background: var(--sunken);
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--syn-string) 32%, var(--border));
   border-radius: 999px;
   flex-shrink: 0;
+}
+
+/* The star itself is the yellow. The count stays on --fg-muted: at 11px the raw
+   string yellow only reaches ~2.8:1 on this background, and the number is the
+   part that has to be readable. */
+.starBadge svg {
+  color: var(--syn-string);
 }
 
 .cardBlurb {
@@ -318,19 +334,21 @@
      snippet directly under the blurb instead of floating mid-card. */
   margin-top: auto;
 }
-
-.cardLink:hover {
-  color: var(--accent-hover);
+@media (hover: hover) {
+  .cardLink:hover {
+    color: var(--accent-hover);
+  }
 }
 
 .arrow {
   transition: transform 0.15s var(--ease);
 }
-
-.cardLink:hover .arrow,
-.tool:hover .arrow,
-.communityRow:hover .arrow {
-  transform: translateX(2px);
+@media (hover: hover) {
+  .cardLink:hover .arrow,
+  .tool:hover .arrow,
+  .communityRow:hover .arrow {
+    transform: translateX(2px);
+  }
 }
 
 /* Terminal chips */
@@ -354,7 +372,7 @@
 
 .chipList li {
   padding: 0.25rem 0.625rem;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--fg-muted);
   background: var(--sunken);
@@ -386,10 +404,28 @@
   padding: 0.9375rem 1.25rem;
   transition: background-color 0.15s var(--ease);
 }
+@media (hover: hover) {
+  .tool:hover,
+  .communityRow:hover {
+    background: var(--sunken);
+  }
+}
 
-.tool:hover,
-.communityRow:hover {
-  background: var(--sunken);
+/* Icon slot. Fixed width so the names line up down the column. */
+.toolIcon,
+.communityIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.5rem;
+  color: var(--fg-muted);
+  transition: color 0.15s var(--ease);
+}
+@media (hover: hover) {
+  .tool:hover .toolIcon,
+  .communityRow:hover .communityIcon {
+    color: var(--accent);
+  }
 }
 
 .toolName,
@@ -408,7 +444,7 @@
 }
 
 .communityAuthor {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 0.8125rem;
   color: var(--fg-muted);
   margin-right: auto;
@@ -441,9 +477,10 @@
   text-underline-offset: 2px;
   transition: text-decoration-color 0.15s var(--ease);
 }
-
-.link:hover {
-  text-decoration-color: var(--accent);
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-color: var(--accent);
+  }
 }
 
 /* Footer */
@@ -492,7 +529,13 @@
     display: none;
   }
   .hero {
-    padding-top: 3.5rem;
+    padding-top: 2rem;
+  }
+  .heroCard {
+    padding: 2rem 1.125rem 1.75rem;
+  }
+  .picker {
+    grid-template-columns: repeat(2, 1fr);
   }
   .stats {
     gap: 1.25rem 2rem;
@@ -528,5 +571,10 @@
   .toolBlurb,
   .communityAuthor {
     flex-basis: 100%;
+  }
+  /* Keep the icon in the first row with the name when the row wraps. */
+  .toolIcon,
+  .communityIcon {
+    width: 1.25rem;
   }
 }

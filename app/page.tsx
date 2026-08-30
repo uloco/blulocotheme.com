@@ -1,4 +1,4 @@
-import { Logo, TerminalGlyph } from "@/components/Logo";
+import { PortIcon } from "@/components/Logo";
 import { CodeWindow } from "@/components/CodeWindow";
 import { GlowRails } from "@/components/GlowRails";
 import { HeroColorBar } from "@/components/HeroColorBar";
@@ -45,6 +45,7 @@ export default async function Home() {
           <nav className={styles.nav}>
             <a href="#editors">Editors</a>
             <a href="#terminals">Terminals</a>
+            <a href="#tools">Tools</a>
             <a href="#palette">Palette</a>
             <a href={links.github} className={styles.navGithub}>
               GitHub
@@ -56,31 +57,44 @@ export default async function Home() {
 
       <main id="top">
         <section className={styles.hero}>
-          <h1 className={styles.srOnly}>Bluloco Theme</h1>
-          <ThemedImage
-            darkSrc="/banner-dark.svg"
-            lightSrc="/banner-light.svg"
-            alt="Bluloco Theme"
-            width={920}
-            height={280}
-            priority
-            className={styles.banner}
-          />
-          <p className={styles.tagline}>
-            A fancy and sophisticated dark and light color scheme for your favorite editors and
-            terminals.
-          </p>
-          <div className={styles.actions}>
-            <a
-              className={styles.primary}
-              href="https://marketplace.visualstudio.com/items?itemName=uloco.theme-bluloco-dark"
-            >
-              <Logo name="vscode" size={17} />
-              Get it for VS Code
-            </a>
-            <a className={styles.secondary} href="#editors">
-              All editors
-            </a>
+          <div className={styles.heroCard}>
+            <h1 className={styles.srOnly}>Bluloco Theme</h1>
+            <ThemedImage
+              darkSrc="/banner-dark.svg"
+              lightSrc="/banner-light.svg"
+              alt="Bluloco Theme"
+              width={920}
+              height={280}
+              priority
+              className={styles.banner}
+            />
+            <p className={styles.tagline}>
+              A fancy and sophisticated color scheme for your favorite editors and terminals, with a
+              light and a dark variant.
+            </p>
+            <div className={styles.picker}>
+              {editors.map((port) => (
+                <a key={port.name} href={`#${slug(port.name)}`} className={styles.pickerItem}>
+                  <PortIcon logo={port.logo} glyph={port.glyph} size={20} />
+                  <span>{port.name}</span>
+                </a>
+              ))}
+            </div>
+            <p className={styles.pickerNote}>
+              Or browse the{" "}
+              <a href="#terminals" className={styles.link}>
+                terminals
+              </a>
+              ,{" "}
+              <a href="#tools" className={styles.link}>
+                tools
+              </a>{" "}
+              and{" "}
+              <a href="#community" className={styles.link}>
+                community ports
+              </a>
+              .
+            </p>
           </div>
           <dl className={styles.stats}>
             <Stat value="1M+" label="installs" />
@@ -94,7 +108,7 @@ export default async function Home() {
         <section className={styles.showcase}>
           <CodeWindow samples={samples} />
           <p className={styles.showcaseNote}>
-            This page uses the Bluloco palette. Toggle dark/light up top to see the other one.
+            This page is painted in the Bluloco palette, so toggle light or dark up top to see both.
           </p>
         </section>
 
@@ -103,7 +117,7 @@ export default async function Home() {
           eyebrow="Editors"
           eyebrowColor="var(--syn-keyword)"
           heading="Pick your editor"
-          lead="Official ports. Dark and light, always."
+          lead="Official ports, each with a dark and a light variant."
         >
           <div className={`${styles.cards} ${styles.cardsWide}`}>
             {editors.map((port) => (
@@ -117,7 +131,7 @@ export default async function Home() {
           eyebrow="Terminals"
           eyebrowColor="var(--syn-function)"
           heading="Already in your terminal"
-          lead="These ship Bluloco out of the box. Nothing to install."
+          lead="These ship Bluloco already, so there is nothing to install."
         >
           <div className={styles.cards}>
             {terminals.map((port) => (
@@ -149,15 +163,18 @@ export default async function Home() {
 
         <Section
           id="tools"
-          eyebrow="Command line"
+          eyebrow="Tools"
           eyebrowColor="var(--syn-property)"
-          heading="The rest of your toolchain"
-          lead="Configs for the tools next to the editor."
+          heading="Everything else in your setup"
+          lead="Configs for the tools you keep open next to the editor."
         >
           <ul className={styles.tools}>
             {tools.map((tool) => (
               <li key={tool.name}>
                 <a href={tool.href} className={styles.tool}>
+                  <span className={styles.toolIcon}>
+                    <PortIcon logo={tool.logo} glyph={tool.glyph} size={19} />
+                  </span>
                   <span className={styles.toolName}>{tool.name}</span>
                   <span className={styles.toolBlurb}>{tool.blurb}</span>
                   <Arrow />
@@ -178,6 +195,9 @@ export default async function Home() {
             {community.map((port) => (
               <li key={port.repo}>
                 <a href={`https://github.com/${port.repo}`} className={styles.communityRow}>
+                  <span className={styles.communityIcon}>
+                    <PortIcon logo={port.logo} glyph={port.glyph} size={18} />
+                  </span>
                   <span className={styles.communityName}>{port.name}</span>
                   <span className={styles.communityAuthor}>{port.author}</span>
                   <span className={styles.communityVariants}>{port.variants}</span>
@@ -242,8 +262,12 @@ export default async function Home() {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
+/** Anchor id for a port card, so the hero picker can jump straight to it. */
+function slug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function Stat({ value, label }: { value: string; label: string }) {  return (
     <div className={styles.stat}>
       <dt className={styles.statValue}>{value}</dt>
       <dd className={styles.statLabel}>{label}</dd>
@@ -287,10 +311,10 @@ function PortCard({ port, stars }: { port: Port; stars: Stars }) {
   const count = port.repo ? stars[port.repo] : undefined;
 
   return (
-    <article className={styles.card}>
+    <article className={styles.card} id={slug(port.name)}>
       <div className={styles.cardHead}>
         <span className={styles.cardIcon}>
-          {port.logo ? <Logo name={port.logo} /> : <TerminalGlyph />}
+          <PortIcon logo={port.logo} glyph={port.glyph} />
         </span>
         <h3 className={styles.cardTitle}>{port.name}</h3>
         {count ? (
