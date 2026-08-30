@@ -315,45 +315,25 @@ touch-specific checks** — it burns a lot of context. Lessons learned:
 - Screenshots come back at 195×422 for a 390×844 screen, so **multiply image
   coordinates by 2** to get tap coordinates.
 
-### OPEN BUG: colour bar does not respond to touch in the simulator
+### Do not trust automated taps in the simulator
 
-**Status: unresolved. This is where the next session should start.**
+Tapping the colour bar through the simulator automation appears to do nothing.
+**The feature works when a person taps it.** The synthetic taps that
+`mobile_click_on_screen_at_coordinates` produces do not deliver the event
+sequence the component needs, so a "no response" result there means nothing.
 
-The logic is verified correct in Chrome. With `390x844x3,mobile,touch` emulation:
-tapping inside the bar but *below* a pill selects the nearest pill and expands it
-to 100px, a second tap collapses it, and tapping a different pill moves the
-selection. All measured, all passing.
+An entire round was lost treating this as a real bug: three rewrites of the event
+handling, plus a production build served on port 3100 to rule out caching. All of
+it chasing a testing artifact.
 
-On the iOS simulator, nothing happens: no tap response, no swipe response.
+So: verify touch behaviour **by hand**, or in Chrome with
+`390x844x3,mobile,touch` emulation, which does respond to dispatched events and
+is where the logic was actually confirmed correct. Use simulator screenshots for
+*layout* only.
 
-Hypotheses **already ruled out**:
-
-| Ruled out | How |
-| --- | --- |
-| Hydration or JS broken | The theme toggle works on the simulator. |
-| Wrong tap coordinates | The theme toggle at (352, 60) responds; the pill row was located from a screenshot and tapped dead centre. |
-| Tiny touch target | Fixed anyway — the handler is on the 56px bar now, and Chrome confirms a below-the-pill tap works. |
-| Stale cached JS | Reproduced against `next start -p 3100`, whose chunk filenames are content-hashed. |
-| `GlowRails` overlay intercepting | `.rail` sets `pointer-events: none`, which the `.glow` children inherit. |
-
-Leading hypothesis: the simulator reports **`(hover: hover)` as true** (its
-pointer is trackpad-driven), so `handleClick` early-returns, while no real hover
-movement occurs to drive the `pointermove` path. That would explain the click
-doing nothing. It does **not** explain `onTouchMove` failing during a horizontal
-swipe, so something else may also be wrong.
-
-Next step, and do this **before** changing any more code: instrument instead of
-guessing. Add a temporary readout inside `HeroColorBar` showing
-`matchMedia("(hover: hover)").matches` plus counters for `pointermove`,
-`touchmove` and `click`, then screenshot it on the simulator. That distinguishes
-"events never arrive" from "events arrive and the guard rejects them" in one shot.
-A draft of this instrumentation was written and then reverted to keep the tree
-clean; rewrite it rather than hunting for it.
-
-If it turns out to be a simulator artifact, verify on a real iPhone and consider
-replacing the `matchMedia` guard with a `pointerup`-based check on
-`e.pointerType`, which reflects the actual input device rather than the display's
-capabilities.
+One real problem did come out of it, and it is fixed: a 20×14px pill is an
+unusable touch target, so the tap handler now lives on the 56px-tall bar and maps
+the tap's x to the nearest pill.
 
 ---
 
@@ -406,7 +386,7 @@ carry slightly different visual weight. Not yet resolved.
 | Hero stat "1M+ installs" | Marketplace shows 527k dark + 500k light. Open question whether to keep the combined figure or split it per variant. |
 | JetBrains plugin | Owner intends to publish an official one. The card copy should change when that lands. |
 | Icon weight | Brand logos are filled, hand-drawn glyphs are stroked, so they read at slightly different weights in the Tools and Community rows. Unresolved. |
-| Colour bar on touch | The tap-anywhere-on-the-bar fix is **not yet verified on the simulator**. See §7a. |
+| Colour bar on touch | A tap outside an expanded pill does not collapse it yet. See §12. |
 
 ---
 
@@ -478,12 +458,19 @@ Before calling anything done, check in a browser:
 
 ## 12. Next session: start here
 
-1. **Open bug**: the colour bar does not respond to touch on the iOS simulator.
-   Full diagnosis and the ruled-out list are in §7a. Instrument before editing.
-2. **Verify on a real iPhone** once the simulator question is settled.
-3. Optional polish, in rough priority order:
+1. **Tap outside an expanded pill should collapse it.** Right now a tap only
+   collapses when it lands on the bar again. Add a dismiss on tapping anywhere
+   else on the page — a listener on `document` that clears `active`, skipping
+   taps inside the bar itself. Remember to clean the listener up, and note the
+   React compiler lint forbids `setState` in an effect, so wire it with an event
+   listener rather than derived state.
+2. Optional polish, in rough priority order:
    - Unify icon weight; brand logos are filled, glyphs are stroked (§8).
    - Decide the "1M+ installs" stat: combined, or split per variant (§9).
-4. Infrastructure still outstanding: set `GITHUB_TOKEN` on Vercel, and point the
+3. Infrastructure still outstanding: set `GITHUB_TOKEN` on Vercel, and point the
    netcup DNS at Vercel (§9 has the exact records).
+
+Verify touch behaviour by hand or in Chrome emulation, never with simulator
+automation. See §7a.
+
 
