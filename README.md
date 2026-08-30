@@ -3,6 +3,9 @@
 Landing page for [Bluloco](https://github.com/uloco/bluloco.nvim), a dark and
 light color scheme for editors and terminals.
 
+> **Working on this?** Read [DECISIONS.md](./DECISIONS.md) first. It tracks every
+> decision, the deliberate tradeoffs, and a list of regressions not to repeat.
+
 ## Running it
 
 ```sh
