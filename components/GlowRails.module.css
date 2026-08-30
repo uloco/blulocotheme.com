@@ -26,22 +26,22 @@
 
 /* Wide, heavily blurred copy. Bleeds inward over the page background. */
 .glow {
-  width: 130px;
-  filter: blur(45px);
-  opacity: 0.5;
+  width: 90px;
+  filter: blur(36px);
+  opacity: 0.45;
 }
 
 .left .glow {
-  left: -70px;
+  left: -48px;
 }
 
 .right .glow {
-  right: -70px;
+  right: -48px;
 }
 
 /* Sharp core. Narrow, slightly soft edge so it does not look like a border. */
 .strip {
-  width: 5px;
+  width: 7px;
   filter: blur(0.5px);
 }
 
@@ -59,17 +59,17 @@
 
 @media (max-width: 768px) {
   .glow {
-    width: 90px;
-    filter: blur(32px);
-    opacity: 0.38;
+    width: 64px;
+    filter: blur(26px);
+    opacity: 0.35;
   }
   .left .glow {
-    left: -55px;
+    left: -36px;
   }
   .right .glow {
-    right: -55px;
+    right: -36px;
   }
   .strip {
-    width: 3px;
+    width: 4px;
   }
 }
