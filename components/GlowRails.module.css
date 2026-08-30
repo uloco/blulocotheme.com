@@ -29,9 +29,9 @@
 /* Soft ambient halo behind the strip. Wide and heavily blurred so the scope
    boundaries dissolve completely into a colour wash. */
 .glow {
-  width: 120px;
-  filter: blur(60px);
-  opacity: 0.28;
+  width: 80px;
+  filter: blur(44px);
+  opacity: 0.24;
 }
 
 /* Anchored flush to the edge, never past it: a negative offset here would add
@@ -86,9 +86,9 @@
 
 @media (max-width: 768px) {
   .glow {
-    width: 68px;
-    filter: blur(38px);
-    opacity: 0.2;
+    width: 48px;
+    filter: blur(28px);
+    opacity: 0.18;
   }
   .strip {
     width: 4px;
