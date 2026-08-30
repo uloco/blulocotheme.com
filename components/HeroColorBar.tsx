@@ -8,35 +8,49 @@ const colors = scopes.slice(2); // skip bg and fg
 
 /** How many neighbours on each side are affected by the magnification. */
 const REACH = 2;
-/** Maximum extra scale applied to the hovered pill. */
-const MAX_BOOST = 1.8;
+/** Extra scale at the cursor. 0 = flat, 1 = full boost. */
+const MAX_BOOST = 1;
+
+/** Layout constants. Width changes push neighbours aside, Dock style. The bar
+ *  has a fixed height, so vertical growth never moves content below it. */
+const BASE_W = 44;
+const BASE_H = 16;
+const MAX_H = 40;
+/** Extra width a non-active neighbour gains at full boost. */
+const NEIGHBOUR_W_GAIN = 10;
+/** Rough px per character at the label font size, plus inner padding. */
+const CHAR_W = 6.1;
+const LABEL_PAD = 24;
+
+/** Cosine falloff, 1 at the cursor down to 0 past REACH. */
+function boostAt(distance: number): number {
+  if (distance > REACH) return 0;
+  const t = 1 - distance / (REACH + 1);
+  return (Math.cos((1 - t) * Math.PI) + 1) / 2;
+}
 
 /**
- * macOS Dock-style magnification on the syntax palette pills. Growth is done
- * entirely via CSS transforms so the layout never shifts — no width/height
- * changes, no reflow, no content jump.
+ * macOS Dock-style magnification on the syntax palette pills. The hovered pill
+ * grows and widens to fit its scope name, pushing its neighbours aside. The
+ * bar keeps a fixed height so the rest of the page never shifts.
  */
 export function HeroColorBar() {
   const [active, setActive] = useState<number | null>(null);
-  const [scales, setScales] = useState<number[]>(() => colors.map(() => 1));
   const barRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const current = active === null ? null : colors[active];
 
   const handleMove = useCallback((e: React.MouseEvent) => {
-    const bar = barRef.current;
-    if (!bar) return;
-
+    if (!barRef.current) return;
     const mouseX = e.clientX;
     let closestIdx = 0;
     let closestDist = Infinity;
 
     pillRefs.current.forEach((el, i) => {
       if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const dist = Math.abs(mouseX - cx);
+      const r = el.getBoundingClientRect();
+      const dist = Math.abs(mouseX - (r.left + r.width / 2));
       if (dist < closestDist) {
         closestDist = dist;
         closestIdx = i;
@@ -44,21 +58,9 @@ export function HeroColorBar() {
     });
 
     setActive(closestIdx);
-
-    const next = colors.map((_, i) => {
-      const dist = Math.abs(i - closestIdx);
-      if (dist > REACH) return 1;
-      const t = 1 - dist / (REACH + 1);
-      return 1 + MAX_BOOST * (Math.cos((1 - t) * Math.PI) + 1) / 2;
-    });
-
-    setScales(next);
   }, []);
 
-  const handleLeave = useCallback(() => {
-    setActive(null);
-    setScales(colors.map(() => 1));
-  }, []);
+  const clear = useCallback(() => setActive(null), []);
 
   return (
     <div className={styles.wrap}>
@@ -66,12 +68,15 @@ export function HeroColorBar() {
         ref={barRef}
         className={styles.bar}
         onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
+        onMouseLeave={clear}
       >
         {colors.map((s, i) => {
-          const sy = scales[i];
-          const sx = i === active ? 1 + (sy - 1) * 0.6 : 1 + (sy - 1) * 0.15;
-          const showLabel = i === active && sy > 2;
+          const boost = active === null ? 0 : boostAt(Math.abs(i - active));
+          const isActive = i === active;
+          const height = BASE_H + (MAX_H - BASE_H) * boost * MAX_BOOST;
+          const width = isActive
+            ? Math.max(s.name.length * CHAR_W + LABEL_PAD, BASE_W)
+            : BASE_W + NEIGHBOUR_W_GAIN * boost;
 
           return (
             <button
@@ -79,22 +84,18 @@ export function HeroColorBar() {
               type="button"
               ref={(el) => { pillRefs.current[i] = el; }}
               className={styles.pill}
+              data-active={isActive || undefined}
               style={{
                 background: `var(--syn-${s.token})`,
-                transform: `scaleY(${sy}) scaleX(${sx})`,
+                width: `${width}px`,
+                height: `${height}px`,
               }}
               aria-label={s.name}
               onFocus={() => setActive(i)}
-              onBlur={() => { setActive(null); setScales(colors.map(() => 1)); }}
+              onBlur={clear}
               onClick={() => setActive(i)}
             >
-              <span
-                className={styles.label}
-                style={{
-                  opacity: showLabel ? 1 : 0,
-                  transform: `scaleY(${1 / sy}) scaleX(${1 / sx})`,
-                }}
-              >
+              <span className={styles.label} data-show={isActive || undefined}>
                 {s.name}
               </span>
             </button>
