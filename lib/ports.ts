@@ -218,6 +218,7 @@ export const community: CommunityPort[] = [
   { name: "Notepad++", author: "Fatal1tyBarucco", repo: "Fatal1tyBarucco/Bluloco-Dark-Theme-for-Notepad-Plus-Plus", variants: "dark", glyph: "code" },
   { name: "Geany", author: "wibare", repo: "wibare/bluloco-dark-geany", variants: "dark", glyph: "code" },
   { name: "yeet", author: "aserowy", repo: "aserowy/yeet-bluloco-theme", variants: "dark, light", glyph: "panes" },
+  { name: "lich", author: "lichdotdev", repo: "lichdotdev/bluloco-lich", variants: "dark, light", logo: "lich" },
 ];
 
 export const links = {
