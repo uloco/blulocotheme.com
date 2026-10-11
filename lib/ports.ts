@@ -212,12 +212,12 @@ export type CommunityPort = {
 export const community: CommunityPort[] = [
   { name: "Helix", author: "DeviousStoat", repo: "DeviousStoat/bluloco.helix", variants: "dark, light", logo: "helix" },
   { name: "Vim", author: "DanBradbury", repo: "DanBradbury/bluloco.vim", variants: "dark, light", logo: "vim" },
-  { name: "Yazi", author: "hankertrix", repo: "hankertrix/bluloco-yazi", variants: "dark, light", glyph: "panes" },
+  { name: "Yazi", author: "hankertrix", repo: "hankertrix/bluloco-yazi", variants: "dark, light", logo: "yazi" },
   { name: "Replit", author: "hankertrix", repo: "hankertrix/bluloco.replit", variants: "dark, light", logo: "replit" },
   { name: "Mintty, Git Bash", author: "userhiren", repo: "userhiren/mintty-bluloco", variants: "dark, light", glyph: "terminal" },
-  { name: "Notepad++", author: "Fatal1tyBarucco", repo: "Fatal1tyBarucco/Bluloco-Dark-Theme-for-Notepad-Plus-Plus", variants: "dark", glyph: "code" },
-  { name: "Geany", author: "wibare", repo: "wibare/bluloco-dark-geany", variants: "dark", glyph: "code" },
-  { name: "yeet", author: "aserowy", repo: "aserowy/yeet-bluloco-theme", variants: "dark, light", glyph: "panes" },
+  { name: "Notepad++", author: "Fatal1tyBarucco", repo: "Fatal1tyBarucco/Bluloco-Dark-Theme-for-Notepad-Plus-Plus", variants: "dark", logo: "notepadpp" },
+  { name: "Geany", author: "wibare", repo: "wibare/bluloco-dark-geany", variants: "dark", logo: "geany" },
+  { name: "yeet", author: "aserowy", repo: "aserowy/yeet-bluloco-theme", variants: "dark, light", logo: "yeet" },
   { name: "lich", author: "lichdotdev", repo: "lichdotdev/bluloco-lich", variants: "dark, light", logo: "lich" },
 ];
 

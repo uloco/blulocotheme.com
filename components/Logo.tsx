@@ -10,10 +10,8 @@ export function Logo({ name, size = 22 }: { name: LogoName; size?: number }) {
 }
 
 /**
- * Stroke glyphs for targets with no logo in simple-icons: bat, lazygit,
- * opencode, Yazi, Mintty, Geany, yeet and friends. Drawn here rather than
- * guessed at as brand paths, so nothing renders as a garbled outline. Each one
- * hints at what the tool does instead of trying to be its logo.
+ * Stroke glyphs for targets with no logo: bat, lazygit, opencode, Mintty and
+ * kitty. Each one hints at what the tool does instead of trying to be its logo.
  */
 const glyphPaths = {
   /** Terminal. Fallback for shells and emulators, e.g. kitty, Mintty. */
@@ -24,10 +22,6 @@ const glyphPaths = {
   file: "M14 3H6v18h12V7zM14 3v4h4M9 12h6M9 16h6",
   /** Spark. Agents and generated things, e.g. opencode. */
   spark: "M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4",
-  /** Two panes. File managers, e.g. Yazi. */
-  panes: "M3 4h18v16H3zM10 4v16",
-  /** Angle brackets. Generic editors, e.g. Geany, yeet, Notepad++. */
-  code: "M9 8l-4 4 4 4M15 8l4 4-4 4",
 } as const;
 
 export type GlyphName = keyof typeof glyphPaths;
