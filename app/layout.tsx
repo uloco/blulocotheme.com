@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 // Iosevka is self-hosted: it is not on Google Fonts, so next/font cannot load
 // it. Only the weights actually used, plus italic for the theme's italic
 // variants, which Shiki emits as font-style on the token spans.
@@ -78,7 +79,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
